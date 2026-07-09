@@ -251,8 +251,6 @@ async function main() {
                     notes: 'Please bring all necessary tools',
                     status: BookingStatus.REQUESTED,
                     totalAmount: technicianServices[0]!.price,
-                    discountApplied: 0,
-                    finalAmount: technicianServices[0]!.price,
                     isPaid: false,
                 },
             });
@@ -263,7 +261,7 @@ async function main() {
                 data: {
                     bookingId: booking.id,
                     userId: customer.id,
-                    amount: booking.finalAmount,
+                    amount: booking.totalAmount,
                     currency: 'usd',
                     method: PaymentMethod.STRIPE,
                     provider: 'stripe',
@@ -283,8 +281,6 @@ async function main() {
                     technicianId: technician1Profile!.id,
                     rating: 5,
                     comment: 'Excellent service! Very professional and thorough.',
-                    images: [],
-                    isVerified: true,
                 },
             });
             console.log(`Review created: ${review.id}`);
@@ -326,8 +322,6 @@ async function main() {
                     notes: 'Please call before arriving',
                     status: BookingStatus.REQUESTED,
                     totalAmount: technicianServices[0]!.price,
-                    discountApplied: 10,
-                    finalAmount: technicianServices[0]!.price * 0.9,
                     isPaid: false,
                 },
             });

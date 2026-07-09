@@ -14,8 +14,6 @@ model Booking {
   notes                 String?
   status                BookingStatus       @default(REQUESTED)
   totalAmount           Float
-  discountApplied       Float?              @default(0)
-  finalAmount           Float
   isPaid                Boolean             @default(false)
   cancelledAt           DateTime?
   cancellationReason    String?
