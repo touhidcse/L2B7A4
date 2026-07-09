@@ -1,0 +1,28 @@
+model Payment {
+  id                    String              @id @default(uuid())
+  bookingId             String              @unique
+  booking               Booking             @relation(fields: [bookingId], references: [id])
+  userId                String
+  user                  User                @relation(fields: [userId], references: [id])
+  amount                Float
+  currency              String              @default("usd")
+  method                PaymentMethod       @default(STRIPE)
+  provider              String              @default("stripe")
+  transactionId         String              @unique
+  paymentIntentId       String?
+  status                PaymentStatus       @default(PENDING)
+  paymentData           Json?
+  failureReason         String?
+  paidAt                DateTime?
+  refundedAt            DateTime?
+  refundAmount          Float?
+  stripeSessionId       String?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  
+  @@index([bookingId])
+  @@index([userId])
+  @@index([transactionId])
+  @@index([status])
+  @@map("payments")
+}
