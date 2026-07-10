@@ -6,11 +6,12 @@ import { RegisterUserPayload } from "./user.interface";
 
 
 
+
 const registerUserIntoDB = async (payload : RegisterUserPayload) =>{
     
-    const {name, email, password, profilePhoto}=payload;
+    const {name, email, password,role}=payload;
 
-    const isUserExist = await prisma.user.findUniqueOrThrow({
+    const isUserExist = await prisma.user.findUnique({
         where: {email}
     })
 
@@ -20,12 +21,8 @@ const registerUserIntoDB = async (payload : RegisterUserPayload) =>{
         data: {
             name,
             email,
+            role,
             password: hashedPassword,
-            profile: {
-                create:{
-                    profilePhoto
-                }
-            }
         }
     });
 
@@ -37,9 +34,6 @@ const registerUserIntoDB = async (payload : RegisterUserPayload) =>{
         omit:{
             password: true
         },
-        include: {
-            profile:true
-        }
     })
 
     return user;
@@ -47,47 +41,44 @@ const registerUserIntoDB = async (payload : RegisterUserPayload) =>{
 
 const getMyprofileFromDB = async(userId: string)=>{
 
-    const user = await prisma.user.findFirstOrThrow({
+    const user = await prisma.user.findUniqueOrThrow({
         where: {id: userId},
         omit: {
             password: true,
         },
-        include:{
-            profile: true,
-        }
     });
 
     return user;
 }
 
-const updateMyProfileIntoDB = async (userId: string, payload: any)=>{
-    const {name, email, profilePhoto,bio}=payload;
+// const updateMyProfileIntoDB = async (userId: string, payload: any)=>{
+//     const {name, email, profilePhoto,bio}=payload;
 
-    const updatedUser= await prisma.user.update({
-        where:{ id: userId},
-        data: {
-            name,
-            email,
-            profile:{
-                update:{
-                    profilePhoto,
-                    bio
-                }
-            }
-        },
-        omit:{
-            password: true
-        },
-        include:{
-            profile: true
-        }
-    })
-    return updatedUser;
-}
+//     const updatedUser= await prisma.user.update({
+//         where:{ id: userId},
+//         data: {
+//             name,
+//             email,
+//             profile:{
+//                 update:{
+//                     profilePhoto,
+//                     bio
+//                 }
+//             }
+//         },
+//         omit:{
+//             password: true
+//         },
+//         include:{
+//             profile: true
+//         }
+//     })
+//     return updatedUser;
+// }
 
 
 export const userService = {
     registerUserIntoDB,
     getMyprofileFromDB,
-    updateMyProfileIntoDB
+    // updateMyProfileIntoDB
 }

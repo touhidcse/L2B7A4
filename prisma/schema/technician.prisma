@@ -1,25 +1,15 @@
 model TechnicianProfile {
-  id                    String              @id @default(uuid())
-  userId                String              @unique
-  user                  User                @relation(fields: [userId], references: [id])
-  category              String
-  description           String?
-  experienceYears       Int
-  hourlyRate            Float
-  isAvailable           Boolean             @default(true)
-  location              String?
-  rating                Float?              @default(0)
-  totalReviews          Int                 @default(0)
-  skills                String[]            
-  bio                   String?             
-  availability          Json?               
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
-  
-  bookings              Booking[]           // This connects to Booking.technician
-  reviews               Review[]
-  services              Service[]           // <-- ADD THIS LINE to complete the relation
-  
+  id String @id @default(uuid())
+  userId String @unique
+  experience Int
+  bio String?
+  rating Float @default(0)
+
+  user User @relation(fields: [userId], references: [id])
+  services Service[]
+  bookings Booking[]
+  reviews Review[]
+
   @@index([userId])
   @@map("technician_profiles")
 }

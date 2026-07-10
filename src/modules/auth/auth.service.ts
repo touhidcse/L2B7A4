@@ -11,10 +11,12 @@ const loginUser = async (payload: ILoginUser) => {
     const user = await prisma.user.findUniqueOrThrow({
         where: { email }
     })
-    if (!user.isActive) {
+
+    if (user.isBan) {
         throw new Error("Your account inactive. Please contact with support.")
     }
     const isPasswordMatched = await bcrypt.compare(password, user.password);
+     
     if (!isPasswordMatched) {
         throw new Error("Password is Incorrect");
     }
@@ -43,8 +45,6 @@ const loginUser = async (payload: ILoginUser) => {
         refreshToken
     };
 }
-
-
 
 export const authService = {
     loginUser

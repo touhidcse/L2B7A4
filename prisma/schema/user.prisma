@@ -1,23 +1,20 @@
 model User {
-  id                    String              @id @default(uuid())
-  email                 String              @unique
-  password              String
-  name                  String
-  role                  Role                @default(CUSTOMER)
-  phone                 String?
-  address               String?
-  profileImage          String?
-  isActive              Boolean             @default(true)
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
+  id       String  @id @default(uuid())
+  name     String
+  email    String  @unique
+  password String
+  phone    String?
+  address  String?
+  role Role
+  isBan Boolean @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime   @updatedAt
   
-  profile               Profile?
-  technicianProfile     TechnicianProfile?
-  customerBookings      Booking[]           @relation("CustomerBookings")
+  technicianProfile TechnicianProfile?
+  bookings Booking[] @relation("CustomerBookings")
+  reviews Review[]
+  payments  Payment[]
 
-  reviews               Review[]
-  payments              Payment[]
-  
   @@index([email])
   @@index([role])
   @@map("users")

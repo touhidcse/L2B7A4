@@ -36,11 +36,11 @@ export const globalErrorHandler = (err: any, req: Request, res: Response, next: 
             errorMesage = "Error occur during execution"
     }
 
-    res.status(httpstatus.INTERNAL_SERVER_ERROR).json({
+    res.status(statusCode || httpstatus.INTERNAL_SERVER_ERROR).json({
         success: false,
-        statuscode: statusCode || httpstatus.INTERNAL_SERVER_ERROR,
+        statusCode: statusCode || 500,
         name: errornName,
         message: errorMesage,
         error: err.stack
-    })
+    });
 }

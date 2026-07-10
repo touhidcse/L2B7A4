@@ -7,6 +7,7 @@ import httpstatus from "http-status"
 const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunction)=>{
 
     const payload = req.body;
+  
 
     const {accessToken,refreshToken} = await authService.loginUser(payload)
 

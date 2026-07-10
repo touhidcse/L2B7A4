@@ -4,6 +4,8 @@ import cors from "cors"
 import cookieParser from "cookie-parser";
 import { authRoutes } from "./modules/auth/auth.route";
 import { userRoutes } from "./modules/user/user.route";
+import { globalErrorHandler } from "./middlewares/globalErrorHandler";
+import { notFound } from "./middlewares/notFound";
 
 
 
@@ -27,5 +29,11 @@ app.get("/", (req : Request,res: Response)=>{
 app.use("/api/users",userRoutes)
 
 app.use("/api/auth", authRoutes)
+
+
+
+app.use(notFound)
+
+app.use(globalErrorHandler)
 
 export default app;

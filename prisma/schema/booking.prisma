@@ -1,32 +1,19 @@
 model Booking {
-  id                    String              @id @default(uuid())
-  bookingNumber         String              @unique
-  customerId            String
-  customer              User                @relation("CustomerBookings", fields: [customerId], references: [id])
-  technicianId          String
-  technician            TechnicianProfile   @relation(fields: [technicianId], references: [id])
-  serviceId             String
-  service               Service             @relation(fields: [serviceId], references: [id])
-  scheduledDate         DateTime
-  scheduledTime         String
-  location              String
-  address               String?
-  notes                 String?
-  status                BookingStatus       @default(REQUESTED)
-  totalAmount           Float
-  isPaid                Boolean             @default(false)
-  cancelledAt           DateTime?
-  cancellationReason    String?
-  completedAt           DateTime?
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
-  
-  payment               Payment?
-  review                Review?
-  
+  id String @id @default(uuid())
+  customerId String
+  technicianId String
+  serviceId String
+  bookingDate DateTime
+  status BookingStatus @default(REQUESTED)
+
+  customer User @relation("CustomerBookings", fields: [customerId], references: [id])
+  technician TechnicianProfile @relation(fields: [technicianId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+  payment Payment?
+  review Review?
+
   @@index([customerId])
   @@index([technicianId])
   @@index([status])
-  @@index([bookingNumber])
   @@map("bookings")
 }
