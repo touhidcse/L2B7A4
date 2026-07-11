@@ -1,7 +1,8 @@
 model TechnicianProfile {
   id String @id @default(uuid())
   userId String @unique
-  experience Int
+  experience Int @default(0)
+  profilePhoto String?
   bio String?
   rating Float @default(0)
 
