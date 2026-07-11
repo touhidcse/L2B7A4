@@ -89,39 +89,45 @@ const getMyprofileFromDB = async (userId: string) => {
         omit: {
             password: true,
         },
+         include:{
+            bookings: true,
+            payments:true,
+            reviews:true
+        },
     });
 
     return user;
 }
 
-// const updateMyProfileIntoDB = async (userId: string, payload: any)=>{
-//     const {name, email, profilePhoto,bio}=payload;
+const updateCustomerProfileIntoDB = async (userId: string, payload: any)=>{
+    const {name, email,phone,address,role}=payload;
 
-//     const updatedUser= await prisma.user.update({
-//         where:{ id: userId},
-//         data: {
-//             name,
-//             email,
-//             profile:{
-//                 update:{
-//                     profilePhoto,
-//                     bio
-//                 }
-//             }
-//         },
-//         omit:{
-//             password: true
-//         },
-//         include:{
-//             profile: true
-//         }
-//     })
-//     return updatedUser;
-// }
+    if(role !=="CUSTOMER"){
+        throw new Error("You are not a Customer, pls register and login as customer")
+    }
+    const updatedUser= await prisma.user.update({
+        where:{ id: userId},
+        data: {
+            name,
+            email,
+            phone,
+            address
+        },
+        omit:{
+            password: true
+        },
+        include:{
+            bookings: true,
+            payments:true,
+            reviews:true
+        },
+    })
+    return updatedUser;
+}
 
 
 export const userService = {
     registerUserIntoDB,
     getMyprofileFromDB,
-    // updateMyProfileIntoDB
+    updateCustomerProfileIntoDB
 }

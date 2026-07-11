@@ -37,21 +37,21 @@ const getMyprofile = catchAsync(async (req: Request, res: Response, next: NextFu
 })
 
 
-// const updateMyProfile = catchAsync(async (req: Request, res: Response, next: NextFunction)=>{
-//     const userId = req.user?.id as string;
-//     const payload = req.body;
+const updateCustomerProfile = catchAsync(async (req: Request, res: Response, next: NextFunction)=>{
+    const userId = req.user?.id as string;
+    const payload = req.body;
 
-//     const updatedProfile = await userService.updateMyProfileIntoDB(userId,payload);
-//     sendResponse(res,{
-//         success: true,
-//         statusCode: httpstatus.OK,
-//         message: "User Profile Updated successfully",
-//         data: {updatedProfile}
-//     })
-// })
+    const updatedProfile = await userService.updateCustomerProfileIntoDB(userId,payload);
+    sendResponse(res,{
+        success: true,
+        statusCode: httpstatus.OK,
+        message: "User Profile Updated successfully",
+        data: {updatedProfile}
+    })
+})
 
 export const userController = {
     registerUser,
     getMyprofile,
-    // updateMyProfile
+    updateCustomerProfile
 }
