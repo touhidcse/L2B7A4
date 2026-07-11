@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "abailabilities" ALTER COLUMN "day" DROP NOT NULL,
+ALTER COLUMN "startTime" DROP NOT NULL,
+ALTER COLUMN "endTime" DROP NOT NULL;

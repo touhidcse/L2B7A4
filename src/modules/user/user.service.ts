@@ -9,7 +9,7 @@ import { RegisterUserPayload } from "./user.interface";
 
 const registerUserIntoDB = async (payload: RegisterUserPayload) => {
 
-    const { name, email, password, role, bio} = payload;
+    const { id,name, email, password, role, bio } = payload;
 
     const isUserExist = await prisma.user.findUnique({
         where: { email }
@@ -31,9 +31,14 @@ const registerUserIntoDB = async (payload: RegisterUserPayload) => {
                 password: hashedPassword,
                 technicianProfile: {
                     create: {
-                        bio
+                        bio,
+                        availability: {
+                            create: {
+                                technicianId:id 
+                            }
+                        }
                     }
-                }
+                },
             }
         });
 
@@ -45,8 +50,13 @@ const registerUserIntoDB = async (payload: RegisterUserPayload) => {
             omit: {
                 password: true
             },
-            include:{
-                technicianProfile: true
+            include: {
+                technicianProfile: {
+                    include: {
+                        availability: true
+                    }
+                }
+                
             }
         })
 
@@ -89,37 +99,33 @@ const getMyprofileFromDB = async (userId: string) => {
         omit: {
             password: true,
         },
-         include:{
+        include: {
             bookings: true,
-            payments:true,
-            reviews:true
+            payments: true,
+            reviews: true
         },
     });
 
     return user;
 }
 
-const updateCustomerProfileIntoDB = async (userId: string, payload: any)=>{
-    const {name, email,phone,address,role}=payload;
-
-    if(role !=="CUSTOMER"){
-        throw new Error("You are not a Customer, pls register and login as customer")
-    }
-    const updatedUser= await prisma.user.update({
-        where:{ id: userId},
+const updateCustomerProfileIntoDB = async (userId: string, payload: any) => {
+    const { name, email, phone, address, role } = payload;
+    const updatedUser = await prisma.user.update({
+        where: { id: userId },
         data: {
             name,
             email,
             phone,
             address
         },
-        omit:{
+        omit: {
             password: true
         },
-        include:{
+        include: {
             bookings: true,
-            payments:true,
-            reviews:true
+            payments: true,
+            reviews: true
         },
     })
     return updatedUser;

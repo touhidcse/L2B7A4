@@ -1,16 +1,18 @@
 model Booking {
-  id String @id @default(uuid())
-  customerId String
+  id           String        @id @default(uuid())
+  customerId   String
   technicianId String
-  serviceId String
-  bookingDate DateTime
-  status BookingStatus @default(REQUESTED)
+  serviceId    String
+  bookingDate  DateTime
+  startAt      DateTime
+  endAt        DateTime
+  status       BookingStatus @default(REQUESTED)
 
-  customer User @relation("CustomerBookings", fields: [customerId], references: [id])
+  customer   User              @relation("CustomerBookings", fields: [customerId], references: [id])
   technician TechnicianProfile @relation(fields: [technicianId], references: [id])
-  service Service @relation(fields: [serviceId], references: [id])
-  payment Payment?
-  review Review?
+  service    Service           @relation(fields: [serviceId], references: [id])
+  payment    Payment?
+  review     Review?
 
   @@index([customerId])
   @@index([technicianId])
