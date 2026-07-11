@@ -1,6 +1,6 @@
 model Category {
   id String @id @default(uuid())
-  name String @unique
+  name String @unique  
   services Service[]
 
   @@index([name])

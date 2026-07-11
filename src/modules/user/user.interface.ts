@@ -5,8 +5,8 @@ export interface RegisterUserPayload {
     name: string;
     email: string;
     password: string;
-    profilePhoto ?: string;
-    bio? :    string;
+    address?: string;
+    phone? :    string;
     role : Role;
     isBan: boolean
 }

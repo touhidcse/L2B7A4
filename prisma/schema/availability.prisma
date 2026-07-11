@@ -3,7 +3,7 @@ model Availability {
 
   technicianId   String
 
-  day            DayOfWeek?
+  day            DayOfWeek? 
 
   startTime      String?
   endTime        String?

@@ -1,0 +1,23 @@
+import { NextFunction, Request, Response } from "express";
+import { catchAsync } from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
+import httpstatus from "http-status" 
+import { adminService } from "./admin.service";
+
+
+
+const createNewCatagories = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const payload = req.body;
+    const category = await adminService.createNewCatagories(payload)
+    
+    sendResponse(res,{
+        success:true,
+        statusCode: httpstatus.CREATED,
+        message: "Catergory Created successfully",
+        data: {category}
+    })
+});
+
+export const adminController ={
+    createNewCatagories
+}

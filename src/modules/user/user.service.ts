@@ -9,7 +9,7 @@ import { RegisterUserPayload } from "./user.interface";
 
 const registerUserIntoDB = async (payload: RegisterUserPayload) => {
 
-    const { id,name, email, password, role, bio } = payload;
+    const { id,name, email, password, role, address, phone } = payload;
 
     const isUserExist = await prisma.user.findUnique({
         where: { email }
@@ -19,7 +19,7 @@ const registerUserIntoDB = async (payload: RegisterUserPayload) => {
         throw new Error("Admin user can not be created")
     }
 
-    else if (role === "TECHNICIAN") {
+     else if (role === "TECHNICIAN") {
 
         const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds))
 
@@ -29,9 +29,10 @@ const registerUserIntoDB = async (payload: RegisterUserPayload) => {
                 email,
                 role,
                 password: hashedPassword,
+                address,
+                phone,
                 technicianProfile: {
                     create: {
-                        bio,
                         availability: {
                             create: {
                                 technicianId:id 
@@ -44,7 +45,6 @@ const registerUserIntoDB = async (payload: RegisterUserPayload) => {
 
         const user = await prisma.user.findUnique({
             where: {
-                id: createdUser.id,
                 email: createdUser.email || email,
             },
             omit: {
@@ -73,12 +73,13 @@ const registerUserIntoDB = async (payload: RegisterUserPayload) => {
                 email,
                 role,
                 password: hashedPassword,
+                address,
+                phone,
             }
         });
 
         const user = await prisma.user.findUnique({
             where: {
-                id: createdUser.id,
                 email: createdUser.email || email,
             },
             omit: {

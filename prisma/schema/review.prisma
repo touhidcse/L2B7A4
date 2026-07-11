@@ -4,7 +4,7 @@ model Review {
   customerId String
   technicianId String
   rating Int
-  comment String @db.Text
+  comment String 
 
   booking Booking @relation(fields: [bookingId], references: [id])
   customer User @relation(fields: [customerId], references: [id])
