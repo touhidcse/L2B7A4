@@ -4,9 +4,7 @@ import { CategoryPayload } from "./admin.interface";
 
 
 const createNewCatagories = async (payload: CategoryPayload) => {
-
     const { id, name } = payload;
-
     const iscategoryExist = await prisma.category.findFirst({
         where: {
             name: {
@@ -19,7 +17,6 @@ const createNewCatagories = async (payload: CategoryPayload) => {
     if (iscategoryExist) {
         throw new Error("category already exist")
     }
-
     const createdCategory = await prisma.category.create({
         data: {
             name
@@ -36,12 +33,26 @@ const createNewCatagories = async (payload: CategoryPayload) => {
 
         }
     })
-
     return category;
+}
+
+const getAllCategories = async ()=>{
+    
+}
+const getAllusers = async ()=>{
+
+}
+const updateUserStatus = async ()=>{
+
+}
+const getAllBookings = async ()=>{
 
 }
 
-
 export const adminService = {
-    createNewCatagories
+    createNewCatagories,
+    getAllCategories,
+    getAllusers,
+    updateUserStatus,
+    getAllBookings
 }

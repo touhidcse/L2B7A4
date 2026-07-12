@@ -18,6 +18,24 @@ const createNewCatagories = catchAsync(async (req: Request, res: Response, next:
     })
 });
 
+const getAllCategories = catchAsync( async (req: Request, res: Response, next: NextFunction)=>{
+
+});
+const getAllusers = catchAsync( async (req: Request, res: Response, next: NextFunction)=>{
+
+});
+const updateUserStatus = catchAsync( async (req: Request, res: Response, next: NextFunction)=>{
+
+});
+const getAllBookings = catchAsync( async (req: Request, res: Response, next: NextFunction)=>{
+
+});
+
+
 export const adminController ={
-    createNewCatagories
+    createNewCatagories,
+    getAllCategories,
+    getAllusers,
+    updateUserStatus,
+    getAllBookings
 }
