@@ -20,8 +20,24 @@ const createNewCatagories = catchAsync(async (req: Request, res: Response, next:
 
 const getAllCategories = catchAsync( async (req: Request, res: Response, next: NextFunction)=>{
 
+    const allCategory = await adminService.getAllCategories();
+    sendResponse(res,{
+        success:true,
+        statusCode: httpstatus.CREATED,
+        message: "All Catergory Fetched successfully",
+        data: {allCategory}
+    })
+
 });
 const getAllusers = catchAsync( async (req: Request, res: Response, next: NextFunction)=>{
+
+    const allUser = await adminService.getAllusers();
+    sendResponse(res,{
+        success:true,
+        statusCode: httpstatus.CREATED,
+        message: "All User Fetched successfully",
+        data: {allUser}
+    })
 
 });
 const updateUserStatus = catchAsync( async (req: Request, res: Response, next: NextFunction)=>{

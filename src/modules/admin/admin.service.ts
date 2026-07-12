@@ -1,3 +1,4 @@
+import { availableMemory } from "node:process";
 import { prisma } from "../../lib/prisma";
 import { CategoryPayload } from "./admin.interface";
 
@@ -37,9 +38,35 @@ const createNewCatagories = async (payload: CategoryPayload) => {
 }
 
 const getAllCategories = async ()=>{
+
+    const allCategory = await prisma.category.findMany({
+        include: {
+            services: true
+        }
+    });
+
+    return allCategory;
     
 }
 const getAllusers = async ()=>{
+
+    const alluser = await prisma.user.findMany({
+         omit: {
+            password: true,
+        },
+        include: {
+            bookings: true,
+            payments: true,
+            reviews: true,
+            technicianProfile: {
+                include: {
+                    availability: true
+                }
+            }
+        }
+    })
+
+    return alluser;
 
 }
 const updateUserStatus = async ()=>{
