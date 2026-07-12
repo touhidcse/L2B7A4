@@ -41,9 +41,27 @@ const getAllusers = catchAsync( async (req: Request, res: Response, next: NextFu
 
 });
 const updateUserStatus = catchAsync( async (req: Request, res: Response, next: NextFunction)=>{
+    const id = req.params.id;
+    const payload = req.body;
+
+    const updatedStatus = await adminService.updateUserStatus(id as string, payload);
+    sendResponse(res,{
+        success: true,
+        statusCode: httpstatus.OK,
+        message: "User status Updated successfully",
+        data: {updatedStatus}
+    })
+
 
 });
 const getAllBookings = catchAsync( async (req: Request, res: Response, next: NextFunction)=>{
+      const allBookings = await adminService.getAllBookings();
+      sendResponse(res,{
+        success:true,
+        statusCode: httpstatus.CREATED,
+        message: "All Bookings Fetched successfully",
+        data: {allBookings}
+    })
 
 });
 

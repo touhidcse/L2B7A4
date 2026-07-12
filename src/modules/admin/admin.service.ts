@@ -1,6 +1,5 @@
-import { availableMemory } from "node:process";
 import { prisma } from "../../lib/prisma";
-import { CategoryPayload } from "./admin.interface";
+import { CategoryPayload, UpdateUserStatusPayload } from "./admin.interface";
 
 
 
@@ -37,7 +36,7 @@ const createNewCatagories = async (payload: CategoryPayload) => {
     return category;
 }
 
-const getAllCategories = async ()=>{
+const getAllCategories = async () => {
 
     const allCategory = await prisma.category.findMany({
         include: {
@@ -46,12 +45,12 @@ const getAllCategories = async ()=>{
     });
 
     return allCategory;
-    
+
 }
-const getAllusers = async ()=>{
+const getAllusers = async () => {
 
     const alluser = await prisma.user.findMany({
-         omit: {
+        omit: {
             password: true,
         },
         include: {
@@ -68,11 +67,39 @@ const getAllusers = async ()=>{
 
     return alluser;
 
-}
-const updateUserStatus = async ()=>{
+};
+
+const updateUserStatus = async (id: string, payload : UpdateUserStatusPayload) => {
+   
+    const updateStatus = await prisma.user.update({
+        where: { id},
+        data: {
+            isBan: payload.isBan
+        },
+        omit: {
+            password: true
+        },
+        include: {
+            bookings: true,
+            payments: true,
+            reviews: true,
+            technicianProfile:{
+                include:{
+                    availability: true
+                }
+            }
+        },
+    })
+    return updateStatus;
+
 
 }
-const getAllBookings = async ()=>{
+const getAllBookings = async () => {
+
+    const allBookings = await prisma.booking.findMany({
+    })
+
+    return allBookings;
 
 }
 
