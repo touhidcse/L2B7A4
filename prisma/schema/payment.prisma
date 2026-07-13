@@ -1,15 +1,15 @@
 model Payment {
-  id String @id @default(uuid())
-  bookingId  String @unique
-  customerId String
-  amount Float
-  method PaymentMethod @default(STRIPE)
-  status PaymentStatus @default(PENDING)
+  id            String        @id @default(uuid())
+  amount        Float
+  method        PaymentMethod @default(STRIPE)
+  status        PaymentStatus @default(PENDING)
   transactionId String?
-  paidAt DateTime?
-  
-  booking  Booking @relation(fields: [bookingId], references: [id])
-  customer User    @relation(fields: [customerId], references: [id])
+  paidAt        DateTime?
+
+  bookingId  String  @unique
+  customerId String
+  booking    Booking @relation(fields: [bookingId], references: [id])
+  customer   User    @relation(fields: [customerId], references: [id])
 
   @@index([bookingId])
   @@index([transactionId])

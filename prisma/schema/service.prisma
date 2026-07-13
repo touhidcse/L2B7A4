@@ -1,14 +1,14 @@
 model Service {
-  id String @id @default(uuid())
-  title String
-  description String @db.Text
-  price Float
+  id           String @id @default(uuid())
+  title        String
+  description  String @db.Text
+  price        Float
   technicianId String
-  categoryId String
+  categoryId   String
 
   technician TechnicianProfile @relation(fields: [technicianId], references: [id])
-  category Category @relation(fields: [categoryId], references: [id])
-  bookings Booking[]
+  category   Category          @relation(fields: [categoryId], references: [id])
+  bookings   Booking[]
 
   @@index([technicianId])
   @@index([categoryId])

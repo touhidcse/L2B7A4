@@ -103,7 +103,12 @@ const getMyprofileFromDB = async (userId: string) => {
         include: {
             bookings: true,
             payments: true,
-            reviews: true
+            reviews: true,
+            technicianProfile:{
+                include:{
+                    availability: true
+                }
+            }
         },
     });
 

@@ -1,14 +1,14 @@
 model Review {
-  id String @id @default(uuid())
-  bookingId String @unique
-  customerId String
-  technicianId String
-  rating Int
-  comment String 
+  id      String @id @default(uuid())
+  rating  Int
+  comment String
 
-  booking Booking @relation(fields: [bookingId], references: [id])
-  customer User @relation(fields: [customerId], references: [id])
-  technician TechnicianProfile @relation(fields: [technicianId], references: [id])
+  bookingId    String            @unique
+  customerId   String
+  technicianId String
+  booking      Booking           @relation(fields: [bookingId], references: [id])
+  customer     User              @relation(fields: [customerId], references: [id])
+  technician   TechnicianProfile @relation(fields: [technicianId], references: [id])
 
   @@index([technicianId])
   @@index([customerId])

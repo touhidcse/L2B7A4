@@ -1,12 +1,13 @@
 model Booking {
-  id           String        @id @default(uuid())
+  id          String        @id @default(uuid())
+  bookingDate DateTime
+  startAt     DateTime
+  endAt       DateTime
+  status      BookingStatus @default(REQUESTED)
+
   customerId   String
   technicianId String
   serviceId    String
-  bookingDate  DateTime
-  startAt      DateTime
-  endAt        DateTime
-  status       BookingStatus @default(REQUESTED)
 
   customer   User              @relation("CustomerBookings", fields: [customerId], references: [id])
   technician TechnicianProfile @relation(fields: [technicianId], references: [id])

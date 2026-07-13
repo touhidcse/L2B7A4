@@ -1,19 +1,19 @@
 model Availability {
-  id             String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  technicianId   String
+  day DayOfWeek?
 
-  day            DayOfWeek? 
+  startTime String?
+  endTime   String?
 
-  startTime      String?
-  endTime        String?
-
-  isAvailable    Boolean @default(true)
-
-  technician TechnicianProfile @relation(fields: [technicianId], references: [id], onDelete: Cascade)
+  isAvailable Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  technicianId String
+
+  technician TechnicianProfile @relation(fields: [technicianId], references: [id], onDelete: Cascade)
 
   @@map("availabilities")
 }

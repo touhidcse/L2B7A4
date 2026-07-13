@@ -57,7 +57,7 @@ export const auth = (...requieredRoles: Role[]) => {
             throw new Error("user not found. Please log in Again")
         }
         if (user.isBan) {
-            throw new Error("Your account is inActive, pls contact support")
+            throw new Error("Your account is Ban, pls contact support")
         }
 
         req.user = {
