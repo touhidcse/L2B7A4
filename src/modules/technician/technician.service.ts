@@ -297,50 +297,86 @@ const updateTechnicianProfile = async (userId: string, payload: any) => {
     return updatedTechnician;
 };
 
-/**
- * Update availability slots (Private - Technician only)
- * PUT /api/technician/availability
- */
-const updateAvailabilitySlots = async (userId: string, availabilities: any[]) => {
-    // Check if technician exists
+
+const getTechnicianOwnAvailabilities = async (userId: string) => {
+
     const technician = await prisma.technicianProfile.findUnique({
-        where: { userId },
+        where: {
+            userId,
+        },
     });
+
 
     if (!technician) {
         throw new Error("Technician not found");
     }
 
-    // Delete existing availability slots
-    await prisma.availability.deleteMany({
-        where: { technicianId: technician.id },
+
+    const technicianAvailabilities = await prisma.availability.findMany({
+
+        where: {
+            technicianId: technician.id,
+        },
+
+        orderBy: {
+            day: "asc"
+        }
+
     });
 
-    // Create new availability slots
-    const createdAvailabilities = await Promise.all(
-        availabilities.map(async (avail) => {
-            // Only create if the day is provided
-            if (avail.day) {
-                return prisma.availability.create({
-                    data: {
-                        day: avail.day,
-                        startTime: avail.startTime || null,
-                        endTime: avail.endTime || null,
-                        isAvailable: avail.isAvailable !== undefined ? avail.isAvailable : true,
-                        technicianId: technician.id,
-                    },
-                });
-            }
-            return null;
-        })
-    );
 
-    // Filter out null values
-    const filteredAvailabilities = createdAvailabilities.filter((a) => a !== null);
+    return {
+        technicianAvailabilities
+    };
 
-    // Return updated technician with availabilities
-    const updatedTechnician = await prisma.technicianProfile.findUnique({
-        where: { userId },
+};
+
+
+const createAvailabilities = async (userId: string,
+    availabilities: {
+        day: DayOfWeek;
+        startTime?: string;
+        endTime?: string;
+        isAvailable?: boolean;
+    }[]
+) => {
+
+    if (!availabilities || !Array.isArray(availabilities)) {
+        throw new Error("Availability must be an array")
+    }
+
+    const technician = await prisma.technicianProfile.findUnique({
+        where: {
+            userId,
+        },
+    });
+
+
+    if (!technician) {
+        throw new Error("Technician not found");
+    }
+
+
+    const createdAvailabilities =  await prisma.$transaction(async (tx) => {
+
+        // Insert new slots
+        await tx.availability.createMany({
+            data: availabilities.map((slot) => ({
+                technicianId: technician.id,
+                day: slot.day,
+                startTime: slot.startTime ?? null,
+                endTime: slot.endTime ?? null,
+                isAvailable: slot.isAvailable ?? true,
+            })),
+        });
+
+    });
+
+
+   const updatedTechnician = await prisma.technicianProfile.findUnique({
+        where: {
+            userId,
+        },
         include: {
             user: {
                 select: {
@@ -353,7 +389,80 @@ const updateAvailabilitySlots = async (userId: string, availabilities: any[]) =>
             },
             availability: {
                 orderBy: {
-                    day: 'asc',
+                    day: "asc",
+                },
+            },
+            services: {
+                include: {
+                    category: true,
+                },
+            },
+        },
+    });
+
+    return updatedTechnician;
+
+};
+/**
+ * Update availability slots (Private - Technician only)
+ * PUT /api/technician/availability
+ */
+const updateAvailabilitySlots = async (
+    userId: string,
+    availabilities: {
+        day: DayOfWeek;
+        startTime?: string;
+        endTime?: string;
+        isAvailable?: boolean;
+    }[]
+) => {
+
+    if (!availabilities || !Array.isArray(availabilities)) {
+        throw new Error("Availability must be an array")
+    }
+
+    const technician = await prisma.technicianProfile.findUnique({
+        where: {
+            userId,
+        },
+    });
+
+    if (!technician) {
+        throw new Error("Technician not found");
+    }
+
+    await prisma.$transaction(async (tx) => {
+
+        // Insert new slots
+        await tx.availability.createMany({
+            data: availabilities.map((slot) => ({
+                technicianId: technician.id,
+                day: slot.day,
+                startTime: slot.startTime ?? null,
+                endTime: slot.endTime ?? null,
+                isAvailable: slot.isAvailable ?? true,
+            })),
+        });
+
+    });
+
+    const updatedTechnician = await prisma.technicianProfile.findUnique({
+        where: {
+            userId,
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    phone: true,
+                    address: true,
+                },
+            },
+            availability: {
+                orderBy: {
+                    day: "asc",
                 },
             },
             services: {
@@ -648,7 +757,7 @@ const getTechnicianDashboard = async (userId: string) => {
                 status: 'COMPLETED',
             },
         }),
-        
+
         prisma.payment.aggregate({
             where: {
                 status: "COMPLETED",
@@ -662,34 +771,34 @@ const getTechnicianDashboard = async (userId: string) => {
             },
         }),
 
-    prisma.booking.findMany({
-        where: {
-            technicianId: technician.id,
-            status: { in: ['ACCEPTED', 'PAID'] },
-            startAt: {
-                gte: new Date(),
-            },
-        },
-        include: {
-            customer: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    phone: true,
+        prisma.booking.findMany({
+            where: {
+                technicianId: technician.id,
+                status: { in: ['ACCEPTED', 'PAID'] },
+                startAt: {
+                    gte: new Date(),
                 },
             },
-            service: {
-                select: {
-                    id: true,
-                    title: true,
-                    price: true,
+            include: {
+                customer: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+                service: {
+                    select: {
+                        id: true,
+                        title: true,
+                        price: true,
+                    },
                 },
             },
-        },
-        orderBy: { startAt: 'asc' },
-        take: 5,
-    }),
+            orderBy: { startAt: 'asc' },
+            take: 5,
+        }),
         // Recent reviews
         prisma.review.findMany({
             where: {
@@ -718,27 +827,29 @@ const getTechnicianDashboard = async (userId: string) => {
         }),
     ]);
 
-return {
-    stats: {
-        totalBookings,
-        pendingBookings,
-        acceptedBookings,
-        inProgressBookings,
-        completedBookings,
-        totalEarnings: totalEarnings._sum.price || 0,
-        completionRate: totalBookings > 0
-            ? Math.round((completedBookings / totalBookings) * 100)
-            : 0,
-    },
-    upcomingBookings,
-    recentReviews,
-};
+    return {
+        stats: {
+            totalBookings,
+            pendingBookings,
+            acceptedBookings,
+            inProgressBookings,
+            completedBookings,
+            totalEarnings: totalEarnings._sum.price || 0,
+            completionRate: totalBookings > 0
+                ? Math.round((completedBookings / totalBookings) * 100)
+                : 0,
+        },
+        upcomingBookings,
+        recentReviews,
+    };
 };
 
 export const technicanService = {
     getAllTechniciansWithFilter,
     getTechnicianProfileWithReviews,
     updateTechnicianProfile,
+    getTechnicianOwnAvailabilities,
+    createAvailabilities,
     updateAvailabilitySlots,
     getTechnicianOwnBookings,
     updateBookingStatus,

@@ -66,6 +66,34 @@ const updateTechnicianProfile = catchAsync(async (req: Request, res: Response, n
     });
 });
 
+
+
+const getTechnicianOwnAvailabilities = catchAsync(async (req: Request, res: Response, next: NextFunction)=>{
+    const userId = req.user?.id as string;
+
+    const technicianAvailabilities = await technicanService.getTechnicianOwnAvailabilities(userId);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.OK,
+        message: "Availability slots Retrieved successfully",
+        data: technicianAvailabilities
+    });
+});
+
+const createAvailabilities = catchAsync(async (req: Request, res: Response, next: NextFunction)=>{
+    const userId = req.user?.id as string;
+    const { availabilities } = req.body;
+
+    const createdavailabilities = await technicanService.createAvailabilities(userId, availabilities);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.OK,
+        message: "Availability slots Created successfully",
+        data: createdavailabilities
+    });
+});
 /**
  * Update availability slots (Private - Technician only)
  * PUT /api/technician/availability
@@ -74,22 +102,15 @@ const updateAvailabilitySlots = catchAsync(async (req: Request, res: Response, n
     const userId = req.user?.id as string;
     const { availabilities } = req.body;
 
-    if (!availabilities || !Array.isArray(availabilities)) {
-        return sendResponse(res, {
-            success: false,
-            statusCode: httpstatus.BAD_REQUEST,
-            message: "Availabilities must be an array",
-            data: null,
-        });
-    }
+    
 
-    const updatedProfile = await technicanService.updateAvailabilitySlots(userId, availabilities);
+    const updatedAvailability = await technicanService.updateAvailabilitySlots(userId, availabilities);
 
     sendResponse(res, {
         success: true,
         statusCode: httpstatus.OK,
         message: "Availability slots updated successfully",
-        data: updatedProfile,
+        data: updatedAvailability,
     });
 });
 
@@ -168,6 +189,8 @@ export const technicianController = {
     getAllTechniciansWithFilter,
     getTechnicianProfileWithReviews,
     updateTechnicianProfile,
+    getTechnicianOwnAvailabilities,
+    createAvailabilities,
     updateAvailabilitySlots,
     getTechnicianOwnBookings,
     updateBookingStatus,

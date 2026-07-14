@@ -1,7 +1,6 @@
 import { DayOfWeek } from "../../../generated/prisma/enums";
 
 export interface UpdateTechnicianProfilePayload {
-    name?: string;
     profilePhoto?: string;
     bio?: string;
     location?: string;
