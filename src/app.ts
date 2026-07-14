@@ -46,10 +46,6 @@ app.use("/api/categoies", catergoryRoutes)
 app.use("/api/technicians", technicianRoutes)
 
 
-
-
-
-
 //Booking By Customer
 
 app.use("/api/bookings", bookingRoutes)
@@ -64,11 +60,6 @@ app.use("/api/technician", technicianRoutes)
 
 //Admin
 app.use("/api/admin", adminRoutes)
-
-
-
-
-
 
 
 

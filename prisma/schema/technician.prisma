@@ -1,17 +1,16 @@
 model TechnicianProfile {
-  id           String  @id @default(uuid())
-  profilePhoto String?
-  bio          String?
-  location     String?
-  rating       Float   @default(0)
-  experience   Int     @default(0)
-
+  id           String         @id @default(uuid())
   userId       String         @unique
-  user         User           @relation(fields: [userId], references: [id])
+  rating       Float          @default(0)
+  bio          String?
+  experience   Int            @default(0)
+  profilePhoto String?
+  location     String?
   availability Availability[]
-  services     Service[]
   bookings     Booking[]
   reviews      Review[]
+  services     Service[]
+  user         User           @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@map("technician_profiles")

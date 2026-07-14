@@ -1,19 +1,18 @@
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  phone     String?
-  address   String?
-  role      Role
-  isBan     Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  technicianProfile TechnicianProfile?
+  id                String             @id @default(uuid())
+  email             String             @unique
+  password          String
+  name              String
+  role              Role
+  phone             String?
+  address           String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  isBan             Boolean            @default(false)
   bookings          Booking[]          @relation("CustomerBookings")
-  reviews           Review[]
   payments          Payment[]
+  reviews           Review[]
+  technicianProfile TechnicianProfile?
 
   @@index([email])
   @@index([role])

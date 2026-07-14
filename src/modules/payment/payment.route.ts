@@ -9,7 +9,8 @@ const router = Router();
 
 router.post("/create", auth(Role.CUSTOMER), paymentController.createPaymentforAcceptedBooking);
 router.post("/confirm", auth(Role.CUSTOMER), paymentController.confirmPaymentforAcceptedBooking);
-router.get
+router.get("/", auth(Role.CUSTOMER), paymentController.getUserOwnPaymentHistory);
+router.get("/:id", auth(Role.CUSTOMER), paymentController.getPaymentDetails)
 
 
 export const paymentRoutes = router;

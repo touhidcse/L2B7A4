@@ -1,7 +1,11 @@
 model Category {
-  id       String    @id @default(uuid())
-  name     String    @unique
-  services Service[]
+  id        String    @id @default(uuid())
+  name      String    @unique
+
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  
+  services  Service[]
 
   @@index([name])
   @@map("categories")

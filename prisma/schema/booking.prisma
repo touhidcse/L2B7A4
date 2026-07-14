@@ -1,19 +1,22 @@
 model Booking {
-  id          String        @id @default(uuid())
-  bookingDate DateTime
-  startAt     DateTime
-  endAt       DateTime
-  status      BookingStatus @default(REQUESTED)
-
+  id           String            @id @default(uuid())
   customerId   String
   technicianId String
   serviceId    String
 
-  customer   User              @relation("CustomerBookings", fields: [customerId], references: [id])
-  technician TechnicianProfile @relation(fields: [technicianId], references: [id])
-  service    Service           @relation(fields: [serviceId], references: [id])
-  payment    Payment?
-  review     Review?
+  price        Float
+
+
+  status       BookingStatus     @default(REQUESTED)
+  bookingDate  DateTime
+  endAt        DateTime
+  startAt      DateTime
+  cancelAt     DateTime
+  customer     User              @relation("CustomerBookings", fields: [customerId], references: [id])
+  service      Service           @relation(fields: [serviceId], references: [id])
+  technician   TechnicianProfile @relation(fields: [technicianId], references: [id])
+  payment      Payment?
+  review       Review?
 
   @@index([customerId])
   @@index([technicianId])

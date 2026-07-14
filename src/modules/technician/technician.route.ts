@@ -1,16 +1,20 @@
 import { Router } from "express";
-import { technicanController } from "./technicial.controller";
+
 import { auth } from "../../middlewares/auth";
 import { Role } from "../../../generated/prisma/enums";
+import { technicianController } from "./technician.controller";
+
 
 const router = Router()
 
-router.get("/", technicanController.getAllTechnicianWithFilter)
-router.get("/:id", technicanController.getTechnicianProfileWithReviews)
+router.get("/", technicianController.getAllTechniciansWithFilter)
 
-router.put("/profile", auth(Role.TECHNICIAN), technicanController.updateTechnicianProfile)
-router.put("/availability", auth(Role.TECHNICIAN), technicanController.updateAvailabilitySlots)
-router.get("/bookings", auth(Role.TECHNICIAN), technicanController.getTechnicianOwnBookings)
-router.patch("/bookings/:id", auth(Role.TECHNICIAN), technicanController.updateBookingStatus)
+router.get("/:id", technicianController.getTechnicianProfileWithReviews)
+
+router.put("/profile", auth(Role.TECHNICIAN), technicianController.updateTechnicianProfile)
+router.put("/availability", auth(Role.TECHNICIAN), technicianController.updateAvailabilitySlots)
+router.get("/bookings", auth(Role.TECHNICIAN), technicianController.getTechnicianOwnBookings)
+router.patch("/bookings/:id", auth(Role.TECHNICIAN), technicianController.updateBookingStatus)
+router.get("/dashboard", auth(Role.TECHNICIAN), technicianController.getTechnicianDashboard );
 
 export const technicianRoutes = router;
