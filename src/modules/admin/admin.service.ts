@@ -4,11 +4,11 @@ import { CategoryPayload, UpdateUserStatusPayload } from "./admin.interface";
 
 
 const createNewCatagories = async (payload: CategoryPayload) => {
-    const { id, name } = payload;
+    const { id, type } = payload;
     const iscategoryExist = await prisma.category.findFirst({
         where: {
-            name: {
-                equals: name,
+            type: {
+                equals: type,
                 mode: "insensitive"
             }
         }
@@ -19,13 +19,13 @@ const createNewCatagories = async (payload: CategoryPayload) => {
     }
     const createdCategory = await prisma.category.create({
         data: {
-            name
+            type
         }
     });
 
     const category = await prisma.category.findUnique({
         where: {
-            name: createdCategory.name || name,
+            type: createdCategory.type || type,
         },
 
         include: {

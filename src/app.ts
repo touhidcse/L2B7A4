@@ -40,7 +40,7 @@ app.use("/api/auth", authRoutes)
 //Public
 app.use("/api/services", serviceRoutes)
 
-app.use("/api/categoies", catergoryRoutes)
+app.use("/api/categories", catergoryRoutes)
 
 // Public
 app.use("/api/technicians", technicianRoutes)

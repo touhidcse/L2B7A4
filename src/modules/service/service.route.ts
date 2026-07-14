@@ -1,9 +1,9 @@
-import { Router } from "express"
-import { serviecController } from "./service.controller";
-
+import { Router } from "express";
+import { serviceController } from "./service.controller";
 
 const router = Router();
 
-router.get("/", serviecController.getAllServicesWithFilter)
+// Public route - No authentication required
+router.get("/", serviceController.getAllServicesWithFilter);
 
 export const serviceRoutes = router;

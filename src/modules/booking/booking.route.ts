@@ -1,12 +1,30 @@
 import { Router } from "express";
+import { bookingController } from "./booking.controller";
 import { auth } from "../../middlewares/auth";
 import { Role } from "../../../generated/prisma/enums";
-import { bookingController } from "./booking.controller";
 
 const router = Router();
 
-router.post("/", auth(Role.CUSTOMER), bookingController.createNewBooking);
-router.get("/", auth(Role.CUSTOMER), bookingController.getUseOwnBookings);
-router.get("/:id", auth(Role.CUSTOMER), bookingController.geBookingDetails);
+// All booking routes require authentication
+router.use(auth());
+
+// Get bookings with advanced filtering
+router.get("/", bookingController.getBookingsWithFilter);
+
+// Get booking statistics
+router.get("/stats", bookingController.getBookingStats);
+
+// Check if booking can be cancelled
+router.get("/:id/can-cancel", bookingController.canCancelBooking);
+
+// Create booking (Customer only)
+router.post("/", auth(Role.CUSTOMER), bookingController.createBooking);
+
+// Get booking details
+router.get("/:id", bookingController.getBookingDetails);
+
+// Cancel booking (Customer only)
+// Customers can cancel at any point before it reaches IN_PROGRESS status
+router.patch("/:id/cancel", auth(Role.CUSTOMER), bookingController.cancelBooking);
 
 export const bookingRoutes = router;

@@ -357,7 +357,7 @@ const createAvailabilities = async (userId: string,
     }
 
 
-    const createdAvailabilities =  await prisma.$transaction(async (tx) => {
+    const createdAvailabilities = await prisma.$transaction(async (tx) => {
 
         // Insert new slots
         await tx.availability.createMany({
@@ -373,7 +373,7 @@ const createAvailabilities = async (userId: string,
     });
 
 
-   const updatedTechnician = await prisma.technicianProfile.findUnique({
+    const updatedTechnician = await prisma.technicianProfile.findUnique({
         where: {
             userId,
         },
@@ -522,11 +522,12 @@ const getTechnicianOwnBookings = async (userId: string, status?: string, page: n
                 payment: {
                     select: {
                         id: true,
-                        amount: true,
+                        price: true,
                         method: true,
                         status: true,
                         paidAt: true,
-                        transactionId: true,
+                        stripeCustomerId: true,
+                        stripeSubscriptionId: true,
                     },
                 },
                 review: {

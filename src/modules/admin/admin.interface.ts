@@ -1,7 +1,7 @@
 import { Role } from "../../../generated/prisma/enums";
 export interface CategoryPayload {
     id: string;
-    name: string;
+    type: string;
     services: string[]
 }
 
