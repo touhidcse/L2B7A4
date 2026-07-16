@@ -23,6 +23,11 @@ app.use(cors({
     credentials: true
 }))
 
+app.use(
+    "/api/payments/confirm",
+    express.raw({ type: "application/json" })
+)
+
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
@@ -33,6 +38,7 @@ app.get("/", (req : Request,res: Response)=>{
 })
 
 
+app.use("/api/payments", paymentRoutes)
 app.use("/api/users",userRoutes)
 
 app.use("/api/auth", authRoutes)
@@ -50,13 +56,10 @@ app.use("/api/technicians", technicianRoutes)
 
 app.use("/api/bookings", bookingRoutes)
 
-
-// Payment By Customer
-
-app.use("/api/payments", paymentRoutes)
-
 //only technican
 app.use("/api/technician", technicianRoutes)
+
+
 
 //Admin
 app.use("/api/admin", adminRoutes)

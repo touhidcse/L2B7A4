@@ -21,10 +21,11 @@ declare global {
 
 export const auth = (...requieredRoles: Role[]) => {
     return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-        const token = req.cookies.accessToken ? 
+        const token = req.cookies?.accessToken ? 
             req.cookies.accessToken
             :
             req.headers.authorization?.startsWith("Bearer") ? req.headers.authorization?.split(" ")[1] : req.headers.authorization;
+
 
         if (!token) {
             throw new Error("You are not logged in. Please log in to access this resource.")
@@ -57,7 +58,7 @@ export const auth = (...requieredRoles: Role[]) => {
             throw new Error("user not found. Please log in Again")
         }
         if (user.isBan) {
-            throw new Error("Your account is Ban, pls contact support")
+            throw new Error("Your account is Banned, pls contact support")
         }
 
         req.user = {
@@ -68,4 +69,5 @@ export const auth = (...requieredRoles: Role[]) => {
         }
         next();
     }
-)};
+    )
+};

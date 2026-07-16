@@ -12,6 +12,9 @@ model Booking {
   endAt        DateTime
   startAt      DateTime
   cancelAt     DateTime?
+
+  cancelReason String?
+  
   customer     User              @relation("CustomerBookings", fields: [customerId], references: [id])
   service      Service           @relation(fields: [serviceId], references: [id])
   technician   TechnicianProfile @relation(fields: [technicianId], references: [id])

@@ -9,20 +9,22 @@ model Payment {
   // stripe customer ids
   stripeCustomerId String
 
-  // Stripe subscription id
-  stripeSubscriptionId String @unique
+  // Stripe Payment id
+  stripePaymentId String @unique
 
   status PaymentStatus @default(PENDING)
   paidAt DateTime?
 
   cancelAt DateTime?
 
+  cancelReason String?
+
   customerId String
   booking    Booking @relation(fields: [bookingId], references: [id])
   customer   User    @relation(fields: [customerId], references: [id])
 
   @@index([bookingId])
-  @@index([stripeSubscriptionId])
+  @@index([stripePaymentId])
   @@index([status])
   @@map("payments")
 }

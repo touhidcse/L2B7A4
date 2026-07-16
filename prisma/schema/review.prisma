@@ -6,7 +6,7 @@ model Review {
   rating       Int
   comment      String
 
-  reviwDate   DateTime           @default(now())
+  reviewDate   DateTime           @default(now())
 
   booking      Booking           @relation(fields: [bookingId], references: [id])
   customer     User              @relation(fields: [customerId], references: [id])
