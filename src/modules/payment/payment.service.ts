@@ -73,7 +73,7 @@ const createPaymentSession = async (customerId: string, payload: ICreatePaymentP
             };
         }
 
-        // Check if booking is completed or cancelled
+        // Check if booking is completed or cancelled or declined or In-progress
         if (booking.status === 'COMPLETED' || booking.status === 'CANCELLED' || booking.status === "DECLINED" || booking.status === "IN_PROGRESS") {
             throw {
                 statusCode: 400,
@@ -91,12 +91,37 @@ const createPaymentSession = async (customerId: string, payload: ICreatePaymentP
             };
         }
 
+        const user = await prisma.user.findFirstOrThrow({
+            where: {
+                id: customerId
+            },
+            include:{
+                payments: true
+            }
+        })
+
+        // old customer of FixItNowBackend
+
+        let stripeCustomerId = user.payments[0]?.stripeCustomerId
+
+        if (!stripeCustomerId) {
+
+            //new customer of FixItNowBackedn
+            const customer = await stripe.customers.create({
+                email: user.email,
+                name: user.name,
+                metadata: { userId: user.id }
+            })
+
+            stripeCustomerId = customer.id;
+        }
+
         // Create Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
             line_items: [
                 {
                     price_data: {
-                        currency: "bdt",
+                        currency: "usd",
                         product_data: {
                             name: booking.service.title,
                         },
@@ -106,6 +131,7 @@ const createPaymentSession = async (customerId: string, payload: ICreatePaymentP
                 },
             ],
             mode: 'payment',
+            // customer:stripeCustomerId,
             success_url: `${config.app_url}/premium?success=true`,
             cancel_url: `${config.app_url}/payment?success=false`,
             customer_email: booking.customer.email,
@@ -124,7 +150,7 @@ const createPaymentSession = async (customerId: string, payload: ICreatePaymentP
                 price: booking.service.price,
                 method: PaymentMethod.STRIPE,
                 status: PaymentStatus.PENDING,
-                stripeCustomerId: session.customer?.toString() || '',
+                stripeCustomerId: stripeCustomerId,
                 stripePaymentId: session.id,
             },
             include: {
@@ -153,7 +179,6 @@ const createPaymentSession = async (customerId: string, payload: ICreatePaymentP
                 },
             },
         });
-
         return {
             sessionId: session.id,
             checkoutUrl: session.url,
@@ -212,7 +237,7 @@ const getPaymentHistory = async (userId: string, query: IPaymentQuery) => {
     const limit = query.limit || 10;
     const page = query.page || 1;
     const skip = (page - 1) * limit;
-    const sortBy = query.sortBy || "createdAt";
+    const sortBy = query.sortBy || "paidAt";
     const sortOrder = query.sortOrder || "desc";
 
     const andCondition: Prisma.PaymentWhereInput[] = [
@@ -335,23 +360,6 @@ const getPaymentDetails = async (userId: string, paymentId: string) => {
             statusCode: 404,
             message: "Payment not found",
             code: "PAYMENT_NOT_FOUND",
-        };
-    }
-
-    // Check authorization
-    const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { role: true },
-    });
-
-    const isCustomer = payment.customerId === userId;
-    const isAdmin = user?.role === 'ADMIN';
-
-    if (!isCustomer && !isAdmin) {
-        throw {
-            statusCode: 403,
-            message: "You are not authorized to view this payment",
-            code: "UNAUTHORIZED_ACCESS",
         };
     }
 

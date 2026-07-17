@@ -12,7 +12,6 @@ import { ICreatePaymentPayload, IPaymentQuery } from "./payment.interface";
 const createPaymentSession = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.id as string;
     const payload: ICreatePaymentPayload = req.body;
-    console.log(payload);
 
     // Validate required fields
     if (!payload.bookingId) {
@@ -59,7 +58,7 @@ const getPaymentHistory = catchAsync(async (req: Request, res: Response, next: N
     const query: IPaymentQuery = {
         page: req.query.page ? Number(req.query.page) : 1,
         limit: req.query.limit ? Number(req.query.limit) : 10,
-        sortBy: req.query.sortBy as string || "createdAt",
+        sortBy: req.query.sortBy as string || "paidAt",
         sortOrder: req.query.sortOrder as 'asc' | 'desc' || "desc",
         status: req.query.status as any,
         method: req.query.method as any,

@@ -9,12 +9,8 @@ const router = Router();
 
 // Customer only
 router.post("/confirm", paymentController.handleWebhook);
+
 router.post("/create", auth(Role.CUSTOMER), paymentController.createPaymentSession);
-
-
-
-
-
 
 router.get("/",auth(Role.CUSTOMER), paymentController.getPaymentHistory);
 
