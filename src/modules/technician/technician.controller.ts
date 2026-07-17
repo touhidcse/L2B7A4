@@ -66,6 +66,19 @@ const updateTechnicianProfile = catchAsync(async (req: Request, res: Response, n
     });
 });
 
+const createAvailabilities = catchAsync(async (req: Request, res: Response, next: NextFunction)=>{
+    const userId = req.user?.id as string;
+    const { availabilities } = req.body;
+
+    const createdavailabilities = await technicanService.createAvailabilities(userId, availabilities);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.OK,
+        message: "Availability slots Created successfully",
+        data: createdavailabilities
+    });
+});
 
 
 const getTechnicianOwnAvailabilities = catchAsync(async (req: Request, res: Response, next: NextFunction)=>{
@@ -81,19 +94,6 @@ const getTechnicianOwnAvailabilities = catchAsync(async (req: Request, res: Resp
     });
 });
 
-const createAvailabilities = catchAsync(async (req: Request, res: Response, next: NextFunction)=>{
-    const userId = req.user?.id as string;
-    const { availabilities } = req.body;
-
-    const createdavailabilities = await technicanService.createAvailabilities(userId, availabilities);
-
-    sendResponse(res, {
-        success: true,
-        statusCode: httpstatus.OK,
-        message: "Availability slots Created successfully",
-        data: createdavailabilities
-    });
-});
 /**
  * Update availability slots (Private - Technician only)
  * PUT /api/technician/availability
@@ -172,18 +172,7 @@ const updateBookingStatus = catchAsync(async (req: Request, res: Response, next:
  * Get technician dashboard (Private - Technician only)
  * GET /api/technician/dashboard
  */
-const getTechnicianDashboard = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user?.id as string;
 
-    const dashboardData = await technicanService.getTechnicianDashboard(userId);
-
-    sendResponse(res, {
-        success: true,
-        statusCode: httpstatus.OK,
-        message: "Dashboard data retrieved successfully",
-        data: dashboardData,
-    });
-});
 
 export const technicianController = {
     getAllTechniciansWithFilter,
@@ -194,5 +183,5 @@ export const technicianController = {
     updateAvailabilitySlots,
     getTechnicianOwnBookings,
     updateBookingStatus,
-    getTechnicianDashboard,
+    
 };

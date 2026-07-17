@@ -527,7 +527,7 @@ const getTechnicianOwnBookings = async (userId: string, status?: string, page: n
                         status: true,
                         paidAt: true,
                         stripeCustomerId: true,
-                        stripeSubscriptionId: true,
+                        stripePaymentId: true,
                     },
                 },
                 review: {
@@ -607,7 +607,6 @@ const updateBookingStatus = async (userId: string, bookingId: string, payload: a
     // Define allowed status transitions
     const allowedTransitions: Record<string, string[]> = {
         REQUESTED: ['ACCEPTED', 'DECLINED'],
-        ACCEPTED: ['IN_PROGRESS'],
         PAID: ['IN_PROGRESS'],
         IN_PROGRESS: ['COMPLETED'],
         COMPLETED: [],
@@ -698,152 +697,6 @@ const updateBookingStatus = async (userId: string, bookingId: string, payload: a
     return updatedBooking;
 };
 
-/**
- * Get technician dashboard stats (Private - Technician only)
- * GET /api/technician/dashboard
- */
-const getTechnicianDashboard = async (userId: string) => {
-    const technician = await prisma.technicianProfile.findUnique({
-        where: { userId },
-        select: { id: true },
-    });
-
-    if (!technician) {
-        throw {
-            statusCode: 404,
-            message: "Technician profile not found",
-            code: "TECHNICIAN_NOT_FOUND",
-        };
-    }
-
-    const [
-        totalBookings,
-        pendingBookings,
-        acceptedBookings,
-        inProgressBookings,
-        completedBookings,
-        totalEarnings,
-        upcomingBookings,
-        recentReviews,
-    ] = await Promise.all([
-        // Total bookings
-        prisma.booking.count({
-            where: { technicianId: technician.id },
-        }),
-        // Pending bookings (REQUESTED)
-        prisma.booking.count({
-            where: {
-                technicianId: technician.id,
-                status: 'REQUESTED',
-            },
-        }),
-        // Accepted bookings
-        prisma.booking.count({
-            where: {
-                technicianId: technician.id,
-                status: 'ACCEPTED',
-            },
-        }),
-        // In progress bookings
-        prisma.booking.count({
-            where: {
-                technicianId: technician.id,
-                status: 'IN_PROGRESS',
-            },
-        }),
-        // Completed bookings
-        prisma.booking.count({
-            where: {
-                technicianId: technician.id,
-                status: 'COMPLETED',
-            },
-        }),
-
-        prisma.payment.aggregate({
-            where: {
-                status: "COMPLETED",
-                booking: {
-                    technicianId: technician.id,
-                    status: "COMPLETED",
-                },
-            },
-            _sum: {
-                price: true,
-            },
-        }),
-
-        prisma.booking.findMany({
-            where: {
-                technicianId: technician.id,
-                status: { in: ['ACCEPTED', 'PAID'] },
-                startAt: {
-                    gte: new Date(),
-                },
-            },
-            include: {
-                customer: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
-                        phone: true,
-                    },
-                },
-                service: {
-                    select: {
-                        id: true,
-                        title: true,
-                        price: true,
-                    },
-                },
-            },
-            orderBy: { startAt: 'asc' },
-            take: 5,
-        }),
-        // Recent reviews
-        prisma.review.findMany({
-            where: {
-                technicianId: technician.id,
-            },
-            include: {
-                customer: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
-                    },
-                },
-                booking: {
-                    select: {
-                        service: {
-                            select: {
-                                title: true,
-                            },
-                        },
-                    },
-                },
-            },
-            orderBy: { rating: 'desc' },
-            take: 5,
-        }),
-    ]);
-
-    return {
-        stats: {
-            totalBookings,
-            pendingBookings,
-            acceptedBookings,
-            inProgressBookings,
-            completedBookings,
-            totalEarnings: totalEarnings._sum.price || 0,
-            completionRate: totalBookings > 0
-                ? Math.round((completedBookings / totalBookings) * 100)
-                : 0,
-        },
-        upcomingBookings,
-        recentReviews,
-    };
-};
 
 export const technicanService = {
     getAllTechniciansWithFilter,
@@ -853,6 +706,5 @@ export const technicanService = {
     createAvailabilities,
     updateAvailabilitySlots,
     getTechnicianOwnBookings,
-    updateBookingStatus,
-    getTechnicianDashboard,
+    updateBookingStatus
 };

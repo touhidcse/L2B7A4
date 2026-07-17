@@ -14,14 +14,14 @@ router.get("/", bookingController.getBookingsWithFilter);
 // Get booking statistics
 router.get("/stats", bookingController.getBookingStats);
 
-// Check if booking can be cancelled
-router.get("/:id/can-cancel", bookingController.canCancelBooking);
-
 // Create booking (Customer only)
 router.post("/", auth(Role.CUSTOMER), bookingController.createBooking);
 
 // Get booking details
 router.get("/:id", bookingController.getBookingDetails);
+
+// Check if booking can be cancelled
+router.get("/:id/can-cancel", bookingController.canCancelBooking);
 
 // Cancel booking (Customer only)
 // Customers can cancel at any point before it reaches IN_PROGRESS status

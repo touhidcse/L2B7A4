@@ -12,21 +12,15 @@ const router = Router()
 
 router.put("/profile", auth(Role.TECHNICIAN), technicianController.updateTechnicianProfile)
 
-router.get("/availability", auth(Role.TECHNICIAN), technicianController.getTechnicianOwnAvailabilities)
-
-
-
-
 router.post("/availability", auth(Role.TECHNICIAN), technicianController.createAvailabilities)
 
+router.get("/availability", auth(Role.TECHNICIAN), technicianController.getTechnicianOwnAvailabilities)
 
 router.put("/availability", auth(Role.TECHNICIAN), technicianController.updateAvailabilitySlots)
 
-// router.delete("/availability", auth(Role.TECHNICIAN), technicianController.deleteAvailabilityById)
-
 router.get("/bookings", auth(Role.TECHNICIAN), technicianController.getTechnicianOwnBookings)
+
 router.patch("/bookings/:id", auth(Role.TECHNICIAN), technicianController.updateBookingStatus)
-router.get("/dashboard", auth(Role.TECHNICIAN), technicianController.getTechnicianDashboard );
 
 // Public
 router.get("/", technicianController.getAllTechniciansWithFilter)

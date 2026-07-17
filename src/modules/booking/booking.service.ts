@@ -9,52 +9,6 @@ import {
 import { Prisma } from "../../../generated/prisma/client";
 
 /**
- * Validate booking input
- */
-const validateCreateBookingInput = (payload: CreateBookingPayload) => {
-    const errors: string[] = [];
-
-    if (!payload.technicianId) {
-        errors.push("Technician ID is required");
-    }
-    if (!payload.serviceId) {
-        errors.push("Service ID is required");
-    }
-    if (!payload.startAt) {
-        errors.push("Start time is required");
-    }
-    if (!payload.endAt) {
-        errors.push("End time is required");
-    }
-
-    // Validate date formats
-    if (payload.startAt && isNaN(new Date(payload.startAt).getTime())) {
-        errors.push("Invalid start time format");
-    }
-    if (payload.endAt && isNaN(new Date(payload.endAt).getTime())) {
-        errors.push("Invalid end time format");
-    }
-
-    // Validate that start time is before end time
-    if (payload.startAt && payload.endAt) {
-        const start = new Date(payload.startAt);
-        const end = new Date(payload.endAt);
-        if (start >= end) {
-            errors.push("Start time must be before end time");
-        }
-    }
-
-    if (errors.length > 0) {
-        throw {
-            statusCode: 400,
-            message: "Validation failed",
-            code: "VALIDATION_ERROR",
-            errors,
-        };
-    }
-};
-
-/**
  * Get all bookings with advanced filtering
  * GET /api/bookings
  */
@@ -231,6 +185,51 @@ const getBookingsWithFilter = async (query: IBookingQuery, userId?: string) => {
     };
 };
 
+/**
+ * Validate booking input
+ */
+const validateCreateBookingInput = (payload: CreateBookingPayload) => {
+    const errors: string[] = [];
+
+    if (!payload.technicianId) {
+        errors.push("Technician ID is required");
+    }
+    if (!payload.serviceId) {
+        errors.push("Service ID is required");
+    }
+    if (!payload.startAt) {
+        errors.push("Start time is required");
+    }
+    if (!payload.endAt) {
+        errors.push("End time is required");
+    }
+
+    // Validate date formats
+    if (payload.startAt && isNaN(new Date(payload.startAt).getTime())) {
+        errors.push("Invalid start time format");
+    }
+    if (payload.endAt && isNaN(new Date(payload.endAt).getTime())) {
+        errors.push("Invalid end time format");
+    }
+
+    // Validate that start time is before end time
+    if (payload.startAt && payload.endAt) {
+        const start = new Date(payload.startAt);
+        const end = new Date(payload.endAt);
+        if (start >= end) {
+            errors.push("Start time must be before end time");
+        }
+    }
+
+    if (errors.length > 0) {
+        throw {
+            statusCode: 400,
+            message: "Validation failed",
+            code: "VALIDATION_ERROR",
+            errors,
+        };
+    }
+};
 /**
  * Create a new booking (Customer only)
  * POST /api/bookings
