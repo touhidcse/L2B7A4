@@ -18,7 +18,7 @@ router.get("/stats", bookingController.getBookingStats);
 router.post("/", auth(Role.CUSTOMER), bookingController.createBooking);
 
 // Get booking details
-router.get("/:id", bookingController.getBookingDetails);
+router.get("/:id",  bookingController.getBookingDetails);
 
 // Check if booking can be cancelled
 router.get("/:id/can-cancel", bookingController.canCancelBooking);

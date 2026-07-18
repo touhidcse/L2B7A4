@@ -3,6 +3,7 @@ import { categoryController } from "./category.controller";
 
 const router = Router();
 
+//Public
 router.get("/", categoryController.getAllCategories)
 
 export const catergoryRoutes = router;

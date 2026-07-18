@@ -37,7 +37,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser()) 
 
 app.get("/", (req : Request,res: Response)=>{
-    res.send("Hellow World")
+    res.send("Fix It Now Backend")
 })
 
 
@@ -49,6 +49,7 @@ app.use("/api/auth", authRoutes)
 //Public
 app.use("/api/services", serviceRoutes)
 
+//Public
 app.use("/api/categories", catergoryRoutes)
 
 // Public

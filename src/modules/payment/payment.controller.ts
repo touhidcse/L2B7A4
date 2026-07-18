@@ -13,15 +13,6 @@ const createPaymentSession = catchAsync(async (req: Request, res: Response, next
     const userId = req.user?.id as string;
     const payload: ICreatePaymentPayload = req.body;
 
-    // Validate required fields
-    if (!payload.bookingId) {
-        return sendResponse(res, {
-            success: false,
-            statusCode: httpstatus.BAD_REQUEST,
-            message: "Booking ID is required",
-            data: null,
-        });
-    }
     const result = await paymentService.createPaymentSession(userId, payload);
 
     sendResponse(res, {

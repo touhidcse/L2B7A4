@@ -237,7 +237,11 @@ const createBooking = async (customerId: string, payload: CreateBookingPayload) 
  * Get booking details by ID
  * GET /api/bookings/:id
  */
-const getBookingDetails = async (userId: string, bookingId: string) => {
+const getBookingDetails = async (bookingId: string) => {
+    // Ensure id is a string
+    if (!bookingId || typeof bookingId !== 'string') {
+        throw new Error ("Invalid booking ID")
+    }
     const booking = await prisma.booking.findUnique({
         where: { id: bookingId },
         include: {
@@ -304,6 +308,11 @@ const getBookingDetails = async (userId: string, bookingId: string) => {
  * Check if booking can be cancelled
  */
 const canCancelBooking = async (bookingId: string) => {
+    // Ensure id is a string
+        if (!bookingId || typeof bookingId !== 'string') {
+            throw new Error ("Invalid booking ID")
+        }
+
     const booking = await prisma.booking.findUnique({
         where: { id: bookingId },
         select: {
@@ -358,7 +367,7 @@ const canCancelBooking = async (bookingId: string) => {
  * PATCH /api/bookings/:id/cancel
  */
 const cancelBooking = async (userId: string, bookingId: string, payload: CancelBookingPayload) => {
-    const { reason } = payload;
+    const { cancelReason } = payload;
 
     const booking = await prisma.booking.findUnique({
         where: { id: bookingId },
@@ -414,10 +423,12 @@ const cancelBooking = async (userId: string, bookingId: string, payload: CancelB
 
     // Cancel booking
     const cancelledBooking = await prisma.booking.update({
+
         where: { id: bookingId },
         data: {
             status: BookingStatus.CANCELLED,
             cancelAt: new Date(),
+            cancelReason: booking.cancelReason
         },
         include: {
             customer: {
@@ -473,18 +484,6 @@ const getBookingStats = async (userId: string) => {
     }
 
     const where: any = {};
-
-    if (user.role === 'CUSTOMER') {
-        where.customerId = userId;
-    } else if (user.role === 'TECHNICIAN') {
-        const technician = await prisma.technicianProfile.findUnique({
-            where: { userId },
-            select: { id: true },
-        });
-        if (technician) {
-            where.technicianId = technician.id;
-        }
-    }
 
     const [
         totalBookings,

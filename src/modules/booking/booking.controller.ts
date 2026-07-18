@@ -46,26 +46,35 @@ const createBooking = catchAsync(async (req: Request, res: Response, next: NextF
  * GET /api/bookings/:id
  */
 const getBookingDetails = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user?.id as string;
-    const { id } = req.params;
+    // const userId = req.user?.id as string;
+    const { bookinId } = req.params;
 
-    // Ensure id is a string
-    if (!id || typeof id !== 'string') {
-        return sendResponse(res, {
-            success: false,
-            statusCode: httpstatus.BAD_REQUEST,
-            message: "Invalid booking ID",
-            data: null,
-        });
-    }
-
-    const booking = await bookingService.getBookingDetails(userId, id);
+    const booking = await bookingService.getBookingDetails(bookinId as string);
 
     sendResponse(res, {
         success: true,
         statusCode: httpstatus.OK,
         message: "Booking details retrieved successfully",
         data: booking,
+    });
+});
+
+
+
+/**
+ * Check if booking can be cancelled
+ * GET /api/bookings/:id/can-cancel
+ */
+const canCancelBooking = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { bookingId } = req.params;
+    
+    const result = await bookingService.canCancelBooking(bookingId as string);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.OK,
+        message: result.message,
+        data: result,
     });
 });
 
@@ -76,53 +85,16 @@ const getBookingDetails = catchAsync(async (req: Request, res: Response, next: N
  */
 const cancelBooking = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.id as string;
-    const { id } = req.params;
+    const { bookingId } = req.params;
     const payload: CancelBookingPayload = req.body;
 
-    // Ensure id is a string
-    if (!id || typeof id !== 'string') {
-        return sendResponse(res, {
-            success: false,
-            statusCode: httpstatus.BAD_REQUEST,
-            message: "Invalid booking ID",
-            data: null,
-        });
-    }
-
-    const cancelledBooking = await bookingService.cancelBooking(userId, id, payload);
+    const cancelledBooking = await bookingService.cancelBooking(userId, bookingId as string, payload);
 
     sendResponse(res, {
         success: true,
         statusCode: httpstatus.OK,
         message: "Booking cancelled successfully",
         data: cancelledBooking,
-    });
-});
-
-/**
- * Check if booking can be cancelled
- * GET /api/bookings/:id/can-cancel
- */
-const canCancelBooking = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-
-    // Ensure id is a string
-    if (!id || typeof id !== 'string') {
-        return sendResponse(res, {
-            success: false,
-            statusCode: httpstatus.BAD_REQUEST,
-            message: "Invalid booking ID",
-            data: null,
-        });
-    }
-    
-    const result = await bookingService.canCancelBooking(id);
-
-    sendResponse(res, {
-        success: true,
-        statusCode: httpstatus.OK,
-        message: result.message,
-        data: result,
     });
 });
 

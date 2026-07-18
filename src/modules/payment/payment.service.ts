@@ -13,6 +13,11 @@ import config from "../../config";
 const createPaymentSession = async (customerId: string, payload: ICreatePaymentPayload) => {
     const { bookingId } = payload;
 
+    // Validate required fields
+    if (!payload.bookingId) {
+        throw new Error ("Booking ID is required")
+    }
+
     const transactionResult = await prisma.$transaction(async (tx) => {
         // Get booking with customer and service details
         const booking = await tx.booking.findUnique({
@@ -131,7 +136,6 @@ const createPaymentSession = async (customerId: string, payload: ICreatePaymentP
                 },
             ],
             mode: 'payment',
-            // customer:stripeCustomerId,
             success_url: `${config.app_url}/premium?success=true`,
             cancel_url: `${config.app_url}/payment?success=false`,
             customer_email: booking.customer.email,

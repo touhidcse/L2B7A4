@@ -13,5 +13,5 @@ export interface UpdateBookingStatusPayload {
 }
 
 export interface CancelBookingPayload {
-    reason?: string;
+    cancelReason?: string;
 }

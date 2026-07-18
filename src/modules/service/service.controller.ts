@@ -20,7 +20,7 @@ const getAllServicesWithFilter = catchAsync(async (req: Request, res: Response, 
         technicianId: req.query.technicianId as string,
         minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
         maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
-        isBan: req.query.isActive ? req.query.isActive === 'true' : true,
+        isBan: req.query.isBan ? req.query.isBan === 'true' : true,
     };
 
     const result = await serviceService.getAllServicesWithFilter(query);

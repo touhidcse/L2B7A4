@@ -562,7 +562,10 @@ const getTechnicianOwnBookings = async (userId: string, status?: string, page: n
  */
 const updateBookingStatus = async (userId: string, bookingId: string, payload: any) => {
     const { status } = payload;
-
+    
+    if (!status) {
+        throw new Error ("Status is required")
+    }
     // Get technician profile
     const technician = await prisma.technicianProfile.findUnique({
         where: { userId },

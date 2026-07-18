@@ -149,15 +149,6 @@ const updateBookingStatus = catchAsync(async (req: Request, res: Response, next:
     const { id: bookingId } = req.params;
     const { status } = req.body;
 
-    if (!status) {
-        return sendResponse(res, {
-            success: false,
-            statusCode: httpstatus.BAD_REQUEST,
-            message: "Status is required",
-            data: null,
-        });
-    }
-
     const updatedBooking = await technicanService.updateBookingStatus(userId, bookingId as string, { status });
 
     sendResponse(res, {
