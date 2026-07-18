@@ -12,7 +12,7 @@ This backend provides secure authentication, role-based authorization, service m
 ---
 
 ### Live API URL
-
+    https://fixitnowbackend.vercel.app
 
 ---
 
