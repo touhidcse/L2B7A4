@@ -8,8 +8,8 @@ const router = Router();
 // All booking routes require authentication
 router.use(auth());
 
-// Get bookings with advanced filtering
-router.get("/", bookingController.getBookingsWithFilter);
+// Get user's own bookings 
+router.get("/", auth(Role.CUSTOMER), bookingController.getUserOwnBookings);
 
 // Get booking statistics
 router.get("/stats", bookingController.getBookingStats);

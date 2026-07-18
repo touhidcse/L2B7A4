@@ -1,242 +1,65 @@
 import { prisma } from "../../lib/prisma";
 import { BookingStatus } from "../../../generated/prisma/enums";
-import { 
-    CreateBookingPayload, 
+import {
+    CreateBookingPayload,
     CancelBookingPayload,
-    IBookingQuery,
-    IBookingResponse
 } from "./booking.interface";
 import { Prisma } from "../../../generated/prisma/client";
+import { equal } from "node:assert";
 
 /**
- * Get all bookings with advanced filtering
  * GET /api/bookings
  */
-const getBookingsWithFilter = async (query: IBookingQuery, userId?: string) => {
-    const limit = query.limit || 10;
-    const page = query.page || 1;
-    const skip = (page - 1) * limit;
-    const sortBy = query.sortBy || "bookingDate";
-    const sortOrder = query.sortOrder || "desc";
+const getUserOwnBookings = async (customerId: string) => {
 
-    const andCondition: Prisma.BookingWhereInput[] = [];
 
-    // If userId is provided, filter by user's role
-    if (userId) {
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-            select: { role: true },
-        });
-
-        if (user?.role === 'CUSTOMER') {
-            andCondition.push({ customerId: userId });
-        } else if (user?.role === 'TECHNICIAN') {
-            const technician = await prisma.technicianProfile.findUnique({
-                where: { userId },
-                select: { id: true },
-            });
-            if (technician) {
-                andCondition.push({ technicianId: technician.id });
-            }
+    const bookings = await prisma.booking.findMany({
+        where: {
+            customerId
         }
-        // ADMIN can see all bookings
-    }
+    })
 
-    // Search by customer name or service title
-    if (query.searchTerm) {
-        andCondition.push({
-            OR: [
-                {
-                    customer: {
-                        name: {
-                            contains: query.searchTerm,
-                            mode: "insensitive",
-                        },
-                    },
-                },
-                {
-                    service: {
-                        title: {
-                            contains: query.searchTerm,
-                            mode: "insensitive",
-                        },
-                    },
-                },
-            ],
-        });
-    }
-
-    // Filter by status
-    if (query.status) {
-        andCondition.push({
-            status: query.status,
-        });
-    }
-
-    // Filter by customer ID
-    if (query.customerId) {
-        andCondition.push({
-            customerId: query.customerId,
-        });
-    }
-
-    // Filter by technician ID
-    if (query.technicianId) {
-        andCondition.push({
-            technicianId: query.technicianId,
-        });
-    }
-
-    // Filter by date range
-    if (query.startDate && query.endDate) {
-        andCondition.push({
-            bookingDate: {
-                gte: new Date(query.startDate),
-                lte: new Date(query.endDate),
-            },
-        });
-    }
-
-    // Filter by price range
-    if (query.minPrice !== undefined || query.maxPrice !== undefined) {
-        const priceFilter: Prisma.FloatFilter = {};
-        if (query.minPrice !== undefined) {
-            priceFilter.gte = query.minPrice;
-        }
-        if (query.maxPrice !== undefined) {
-            priceFilter.lte = query.maxPrice;
-        }
-        andCondition.push({ price: priceFilter });
-    }
-
-    // Fetch bookings with pagination
-    const [bookings, total] = await Promise.all([
-        prisma.booking.findMany({
-            where: {
-                AND: andCondition,
-            },
-            include: {
-                customer: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
-                        phone: true,
-                        address: true,
-                    },
-                },
-                technician: {
-                    include: {
-                        user: {
-                            select: {
-                                id: true,
-                                name: true,
-                                email: true,
-                                phone: true,
-                            },
-                        },
-                    },
-                },
-                service: {
-                    include: {
-                        category: true,
-                    },
-                },
-                payment: {
-                    select: {
-                        id: true,
-                        price: true,
-                        method: true,
-                        status: true,
-                        paidAt: true,
-                        stripePaymentId: true,
-                    },
-                },
-                review: {
-                    select: {
-                        id: true,
-                        rating: true,
-                        comment: true,
-                        reviewDate: true,
-                    },
-                },
-            },
-            orderBy: {
-                [sortBy]: sortOrder,
-            },
-            take: limit,
-            skip: skip,
-        }),
-        prisma.booking.count({
-            where: {
-                AND: andCondition,
-            },
-        }),
-    ]);
-
-    return {
-        data: bookings,
-        meta: {
-            page,
-            limit,
-            total,
-            totalPages: Math.ceil(total / limit),
-        },
-    };
+    return bookings
 };
 
-/**
- * Validate booking input
- */
-const validateCreateBookingInput = (payload: CreateBookingPayload) => {
-    const errors: string[] = [];
-
-    if (!payload.technicianId) {
-        errors.push("Technician ID is required");
-    }
-    if (!payload.serviceId) {
-        errors.push("Service ID is required");
-    }
-    if (!payload.startAt) {
-        errors.push("Start time is required");
-    }
-    if (!payload.endAt) {
-        errors.push("End time is required");
-    }
-
-    // Validate date formats
-    if (payload.startAt && isNaN(new Date(payload.startAt).getTime())) {
-        errors.push("Invalid start time format");
-    }
-    if (payload.endAt && isNaN(new Date(payload.endAt).getTime())) {
-        errors.push("Invalid end time format");
-    }
-
-    // Validate that start time is before end time
-    if (payload.startAt && payload.endAt) {
-        const start = new Date(payload.startAt);
-        const end = new Date(payload.endAt);
-        if (start >= end) {
-            errors.push("Start time must be before end time");
-        }
-    }
-
-    if (errors.length > 0) {
-        throw {
-            statusCode: 400,
-            message: "Validation failed",
-            code: "VALIDATION_ERROR",
-            errors,
-        };
-    }
-};
 /**
  * Create a new booking (Customer only)
  * POST /api/bookings
  */
 const createBooking = async (customerId: string, payload: CreateBookingPayload) => {
-    // Validate input
-    validateCreateBookingInput(payload);
+
+    // Validate required fields
+    if (!payload.technicianId) {
+        throw new Error("Technician ID is required")
+    }
+
+    if (!payload.serviceId) {
+        throw new Error("Service ID is required")
+    }
+
+    if (!payload.startAt) {
+        throw new Error("Start time is required")
+    }
+
+    if (!payload.endAt) {
+        throw new Error("End time is required")
+    }
+
+    // Validate date formats
+    if (isNaN(new Date(payload.startAt).getTime())) {
+        throw new Error("Invalid start time format")
+    }
+
+    if (isNaN(new Date(payload.endAt).getTime())) {
+        throw new Error("Invalid end time format")
+    }
+
+    // Validate that start time is before end time
+    const start = new Date(payload.startAt);
+    const end = new Date(payload.endAt);
+    if (start >= end) {
+        throw new Error("Start time must be before end time")
+    }
 
     const { technicianId, serviceId, startAt, endAt, bookingDate } = payload;
 
@@ -699,7 +522,7 @@ const getBookingStats = async (userId: string) => {
 };
 
 export const bookingService = {
-    getBookingsWithFilter,
+    getUserOwnBookings,
     createBooking,
     getBookingDetails,
     cancelBooking,
