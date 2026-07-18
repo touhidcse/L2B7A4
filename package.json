@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build":"tsup",
     "start": "node dist/server.js",
     "migrate": "npx prisma migrate dev",
     "generate": "npx prisma generate",
@@ -46,6 +46,7 @@
     "http-status": "^2.1.0",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.22.0",
-    "stripe": "^22.3.2"
+    "stripe": "^22.3.2",
+    "tsup": "^8.5.1"
   }
 }
