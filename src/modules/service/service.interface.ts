@@ -1,12 +1,7 @@
-export interface IServiceQuery {
+export interface ServiceFilter {
+    type?: string;
+    location?: string;
+    rating?: number;
     page?: number;
     limit?: number;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
-    searchTerm?: string;
-    category?: string;
-    technicianId?: string;
-    minPrice?: number;
-    maxPrice?: number;
-    isBan?: boolean;
 }

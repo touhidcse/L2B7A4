@@ -8,7 +8,7 @@ const router = Router();
 // All booking routes require authentication
 router.use(auth());
 
-// Get user's own bookings 
+// Only customer
 router.get("/", auth(Role.CUSTOMER), bookingController.getUserOwnBookings);
 
 // Get booking statistics
@@ -21,10 +21,10 @@ router.post("/", auth(Role.CUSTOMER), bookingController.createBooking);
 router.get("/:id",  bookingController.getBookingDetails);
 
 // Check if booking can be cancelled
-router.get("/:id/can-cancel", bookingController.canCancelBooking);
+router.get("/can-cancel/:id", bookingController.canCancelBooking);
 
 // Cancel booking (Customer only)
 // Customers can cancel at any point before it reaches IN_PROGRESS status
-router.patch("/:id/cancel", auth(Role.CUSTOMER), bookingController.cancelBooking);
+router.patch("/cancel/:id", auth(Role.CUSTOMER), bookingController.cancelBooking);
 
 export const bookingRoutes = router;

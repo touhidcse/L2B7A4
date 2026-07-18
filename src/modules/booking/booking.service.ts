@@ -240,7 +240,7 @@ const createBooking = async (customerId: string, payload: CreateBookingPayload) 
 const getBookingDetails = async (bookingId: string) => {
     // Ensure id is a string
     if (!bookingId || typeof bookingId !== 'string') {
-        throw new Error ("Invalid booking ID")
+        throw new Error("Invalid booking ID")
     }
     const booking = await prisma.booking.findUnique({
         where: { id: bookingId },
@@ -308,10 +308,10 @@ const getBookingDetails = async (bookingId: string) => {
  * Check if booking can be cancelled
  */
 const canCancelBooking = async (bookingId: string) => {
-    // Ensure id is a string
-        if (!bookingId || typeof bookingId !== 'string') {
-            throw new Error ("Invalid booking ID")
-        }
+
+    if (!bookingId) {
+        throw new Error("bookinId is required in params")
+    }
 
     const booking = await prisma.booking.findUnique({
         where: { id: bookingId },
@@ -367,6 +367,10 @@ const canCancelBooking = async (bookingId: string) => {
  * PATCH /api/bookings/:id/cancel
  */
 const cancelBooking = async (userId: string, bookingId: string, payload: CancelBookingPayload) => {
+
+    if (!bookingId) {
+        throw new Error("bookinId is required in params")
+    }
     const { cancelReason } = payload;
 
     const booking = await prisma.booking.findUnique({
@@ -383,6 +387,16 @@ const cancelBooking = async (userId: string, bookingId: string, payload: CancelB
             code: "BOOKING_NOT_FOUND",
         };
     }
+
+    // Check if customer owns this booking
+    if (booking.customerId !== userId) {
+        throw {
+            statusCode: 403,
+            message: "You are not authorized to pay for this booking",
+            code: "UNAUTHORIZED_ACCESS",
+        };
+    }
+
 
     // Can only cancel before IN_PROGRESS
     if (booking.status === 'IN_PROGRESS' || booking.status === 'COMPLETED') {

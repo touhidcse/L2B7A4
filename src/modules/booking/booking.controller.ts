@@ -19,7 +19,7 @@ const getUserOwnBookings = catchAsync(async (req: Request, res: Response, next: 
     sendResponse(res, {
         success: true,
         statusCode: httpstatus.OK,
-        message: "Use's Bookings retrieved successfully",
+        message: "User's own Bookings retrieved successfully",
         data: result,
     });
 });
@@ -66,7 +66,7 @@ const getBookingDetails = catchAsync(async (req: Request, res: Response, next: N
  * GET /api/bookings/:id/can-cancel
  */
 const canCancelBooking = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { bookingId } = req.params;
+    const bookingId  = req.params.id;
     
     const result = await bookingService.canCancelBooking(bookingId as string);
 
@@ -85,7 +85,7 @@ const canCancelBooking = catchAsync(async (req: Request, res: Response, next: Ne
  */
 const cancelBooking = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.id as string;
-    const { bookingId } = req.params;
+    const bookingId = req.params.id;
     const payload: CancelBookingPayload = req.body;
 
     const cancelledBooking = await bookingService.cancelBooking(userId, bookingId as string, payload);

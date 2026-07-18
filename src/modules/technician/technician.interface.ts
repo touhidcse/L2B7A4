@@ -7,6 +7,16 @@ export interface UpdateTechnicianProfilePayload {
     experience?: number;
 }
 
+export interface TechnicianFilters {
+    service?: string;
+    category?: string;
+    location?: string;
+    search?: string;
+    minRating?: string;
+    isAvailable?: string;
+}
+
+
 export interface UpdateAvailabilityPayload {
     day: DayOfWeek;
     startTime?: string;

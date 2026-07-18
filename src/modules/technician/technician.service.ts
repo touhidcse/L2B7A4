@@ -1,75 +1,246 @@
 import { prisma } from "../../lib/prisma";
 import { BookingStatus, DayOfWeek } from "../../../generated/prisma/enums";
+import { TechnicianFilters } from "./technician.interface";
+import { Prisma } from "../../../generated/prisma/browser";
 
 /**
  * Get all technicians with filters (Public)
  * GET /api/technicians
  */
-const getAllTechniciansWithFilter = async (filters: any, page: number = 1, limit: number = 10) => {
-    const where: any = {
+// const getAllTechniciansWithFilter = async (filters: any, page: number = 1, limit: number = 10) => {
+//     const where: any = {
+//         user: {
+//             isBan: false,
+//         },
+//     };
+
+//     // Filter by category
+//     if (filters.category) {
+//         where.services = {
+//             some: {
+//                 category: {
+//                     name: {
+//                         contains: filters.category,
+//                         mode: 'insensitive',
+//                     },
+//                 },
+//             },
+//         };
+//     }
+
+//     // Filter by location
+//     if (filters.location) {
+//         where.location = {
+//             contains: filters.location,
+//             mode: 'insensitive',
+//         };
+//     }
+
+//     // Filter by search (name or skills)
+//     if (filters.search) {
+//         where.OR = [
+//             {
+//                 user: {
+//                     name: {
+//                         contains: filters.search,
+//                         mode: 'insensitive',
+//                     },
+//                 },
+//             },
+//             {
+//                 name: {
+//                     contains: filters.search,
+//                     mode: 'insensitive',
+//                 },
+//             },
+//             {
+//                 bio: {
+//                     contains: filters.search,
+//                     mode: 'insensitive',
+//                 },
+//             },
+//         ];
+//     }
+
+//     // Filter by min rating
+//     if (filters.minRating) {
+//         where.rating = {
+//             gte: parseFloat(filters.minRating),
+//         };
+//     }
+
+//     // Filter by availability
+//     if (filters.isAvailable === 'true') {
+//         where.isAvailable = true;
+//     }
+
+//     const skip = (page - 1) * limit;
+
+//     const [technicians, total] = await Promise.all([
+//         prisma.technicianProfile.findMany({
+//             where,
+//             include: {
+//                 user: {
+//                     select: {
+//                         id: true,
+//                         name: true,
+//                         email: true,
+//                         phone: true,
+//                         address: true
+//                     },
+//                 },
+//                 services: {
+//                     include: {
+//                         category: true,
+//                     },
+//                 },
+//                 availability: {
+//                     orderBy: {
+//                         day: 'asc',
+//                     },
+//                 },
+//                 reviews: {
+//                     orderBy: {
+//                         rating: 'desc',
+//                     },
+//                     take: 5,
+//                     include: {
+//                         customer: {
+//                             select: {
+//                                 id: true,
+//                                 name: true,
+//                             },
+//                         },
+//                     },
+//                 },
+//                 _count: {
+//                     select: {
+//                         bookings: {
+//                             where: {
+//                                 status: 'COMPLETED',
+//                             },
+//                         },
+//                     },
+//                 },
+//             },
+//             orderBy: {
+//                 rating: 'desc',
+//             },
+//             skip,
+//             take: limit,
+//         }),
+//         prisma.technicianProfile.count({ where }),
+//     ]);
+
+//     // Calculate average rating for each technician
+//     const techniciansWithRating = technicians.map((tech) => {
+//         const totalReviews = tech.reviews.length;
+//         const avgRating = totalReviews > 0
+//             ? tech.reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
+//             : 0;
+
+//         return {
+//             ...tech,
+//             averageRating: avgRating,
+//             totalReviews,
+//             completedJobs: tech._count.bookings,
+//         };
+//     });
+
+//     return {
+//         technicians: techniciansWithRating,
+//         meta: {
+//             page,
+//             limit,
+//             total,
+//             pages: Math.ceil(total / limit),
+//         },
+//     };
+// };
+
+
+const getAllTechniciansWithFilter = async (
+    filters: TechnicianFilters,
+    page = 1,
+    limit = 10
+) => {
+    const where: Prisma.TechnicianProfileWhereInput = {
         user: {
             isBan: false,
         },
     };
 
-    // Filter by category
-    if (filters.category) {
+    // Service & Category filter
+    if (filters.service || filters.category) {
         where.services = {
-            some: {
+            some: {},
+        };
+
+        if (filters.service) {
+            where.services.some = {
+                ...where.services.some,
+                title: {
+                    contains: filters.service,
+                    mode: "insensitive",
+                },
+            };
+        }
+
+        if (filters.category) {
+            where.services.some = {
+                ...where.services.some,
                 category: {
-                    name: {
+                    type: {
                         contains: filters.category,
-                        mode: 'insensitive',
+                        mode: "insensitive",
                     },
                 },
-            },
-        };
+            };
+        }
     }
 
-    // Filter by location
+    // Location filter
     if (filters.location) {
         where.location = {
             contains: filters.location,
-            mode: 'insensitive',
+            mode: "insensitive",
         };
     }
 
-    // Filter by search (name or skills)
+    // Search by technician name or bio
     if (filters.search) {
         where.OR = [
             {
                 user: {
                     name: {
                         contains: filters.search,
-                        mode: 'insensitive',
+                        mode: "insensitive",
                     },
-                },
-            },
-            {
-                name: {
-                    contains: filters.search,
-                    mode: 'insensitive',
                 },
             },
             {
                 bio: {
                     contains: filters.search,
-                    mode: 'insensitive',
+                    mode: "insensitive",
                 },
             },
         ];
     }
 
-    // Filter by min rating
+    // Minimum Rating
     if (filters.minRating) {
         where.rating = {
-            gte: parseFloat(filters.minRating),
+            gte: Number(filters.minRating),
         };
     }
 
-    // Filter by availability
-    if (filters.isAvailable === 'true') {
-        where.isAvailable = true;
+    // Availability filter
+    if (filters.isAvailable === "true") {
+        where.availability = {
+            some: {
+                isAvailable: true,
+            },
+        };
     }
 
     const skip = (page - 1) * limit;
@@ -84,7 +255,7 @@ const getAllTechniciansWithFilter = async (filters: any, page: number = 1, limit
                         name: true,
                         email: true,
                         phone: true,
-                        address: true
+                        address: true,
                     },
                 },
                 services: {
@@ -94,14 +265,10 @@ const getAllTechniciansWithFilter = async (filters: any, page: number = 1, limit
                 },
                 availability: {
                     orderBy: {
-                        day: 'asc',
+                        day: "asc",
                     },
                 },
                 reviews: {
-                    orderBy: {
-                        rating: 'desc',
-                    },
-                    take: 5,
                     include: {
                         customer: {
                             select: {
@@ -110,138 +277,152 @@ const getAllTechniciansWithFilter = async (filters: any, page: number = 1, limit
                             },
                         },
                     },
+                    orderBy: {
+                        reviewDate: "desc",
+                    },
+                    take: 5,
                 },
                 _count: {
                     select: {
                         bookings: {
                             where: {
-                                status: 'COMPLETED',
+                                status: "COMPLETED",
                             },
                         },
+                        reviews: true,
                     },
                 },
             },
             orderBy: {
-                rating: 'desc',
+                rating: "desc",
             },
             skip,
             take: limit,
         }),
-        prisma.technicianProfile.count({ where }),
+
+        prisma.technicianProfile.count({
+            where,
+        }),
     ]);
 
-    // Calculate average rating for each technician
-    const techniciansWithRating = technicians.map((tech) => {
-        const totalReviews = tech.reviews.length;
-        const avgRating = totalReviews > 0
-            ? tech.reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
-            : 0;
+    const techniciansWithStats = technicians.map((tech) => {
+        const totalReviews = tech._count.reviews;
+
+        const averageRating =
+            totalReviews > 0
+                ? Number(
+                      (
+                          tech.reviews.reduce(
+                              (sum, review) => sum + review.rating,
+                              0
+                          ) / totalReviews
+                      ).toFixed(2)
+                  )
+                : 0;
 
         return {
             ...tech,
-            averageRating: avgRating,
+            rating: averageRating, // Override DB rating
             totalReviews,
             completedJobs: tech._count.bookings,
         };
     });
 
     return {
-        technicians: techniciansWithRating,
+        technicians: techniciansWithStats,
         meta: {
             page,
             limit,
             total,
-            pages: Math.ceil(total / limit),
+            totalPage: Math.ceil(total / limit),
         },
     };
 };
-
 /**
  * Get technician profile with reviews (Public)
  * GET /api/technicians/:id
  */
 const getTechnicianProfileWithReviews = async (technicianId: string) => {
-    const technician = await prisma.technicianProfile.findUnique({
-        where: { id: technicianId },
-        include: {
-            user: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    phone: true,
-                    address: true,
-                },
-            },
-            services: {
-                include: {
-                    category: true,
-                    bookings: {
-                        where: {
-                            status: 'COMPLETED',
-                        },
-                        select: {
-                            id: true,
-                        },
-                    },
-                },
-            },
-            availability: {
-                orderBy: {
-                    day: 'asc',
-                },
-            },
-            reviews: {
-                include: {
-                    customer: {
-                        select: {
-                            id: true,
-                            name: true,
+
+    const [technician, reviewStats] = await Promise.all([
+        await prisma.technicianProfile.findUnique({
+            where: { id: technicianId },
+            include: {
+                // services: {
+                //     include: {
+                //         category: true,
+                //         bookings: {
+                //             where: {
+                //                 status: 'COMPLETED',
+                //             },
+                //             select: {
+                //                 id: true,
+                //             },
+                //         },
+                //     },
+                // },
+                // availability: {
+                //     orderBy: {
+                //         day: 'asc',
+                //     },
+                // },
+                reviews: {
+                    include: {
+                        customer: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
                         },
                     },
-                },
-                orderBy: {
-                    rating: 'desc',
-                },
-            },
-            bookings: {
-                where: {
-                    status: 'COMPLETED',
-                },
-                include: {
-                    customer: {
-                        select: {
-                            id: true,
-                            name: true,
-                        },
+                    orderBy: {
+                        rating: 'desc',
                     },
-                    service: true,
                 },
-                orderBy: {
-                    endAt: 'desc',
+                bookings: {
+                    where: {
+                        status: 'COMPLETED',
+                    },
+                    include: {
+                        customer: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                        service: true,
+                    },
+                    orderBy: {
+                        endAt: 'desc',
+                    },
+                    take: 10,
                 },
-                take: 10,
             },
-        },
-    });
+        }),
+
+        // Calculate stats
+        prisma.review.aggregate({
+            where: {
+                technicianId,
+            },
+            _avg: {
+                rating: true,
+            },
+            _count: {
+                rating: true,
+            },
+        }),
+    ]);
 
     if (!technician) {
-        throw new Error("Technician not found")
+        throw new Error("Technician not found");
     }
-
-    // Calculate stats
-    const totalReviews = technician.reviews.length;
-    const averageRating = totalReviews > 0
-        ? technician.reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
-        : 0;
-
-    const totalCompletedJobs = technician.bookings.length;
 
     return {
         ...technician,
-        averageRating,
-        totalReviews,
-        totalCompletedJobs,
+        rating: Number((reviewStats._avg.rating ?? 0).toFixed(2)),
+        totalReviews: reviewStats._count.rating,
+        totalCompletedJobs: technician.bookings.length,
     };
 };
 
@@ -562,9 +743,9 @@ const getTechnicianOwnBookings = async (userId: string, status?: string, page: n
  */
 const updateBookingStatus = async (userId: string, bookingId: string, payload: any) => {
     const { status } = payload;
-    
+
     if (!status) {
-        throw new Error ("Status is required")
+        throw new Error("Status is required")
     }
     // Get technician profile
     const technician = await prisma.technicianProfile.findUnique({
