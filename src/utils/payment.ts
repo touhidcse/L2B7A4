@@ -3,16 +3,10 @@ import { prisma } from "../lib/prisma";
 import stripe from "../lib/stripe";
 import { BookingStatus, PaymentStatus } from "../../generated/prisma/enums";
 
-
-
-
 /**
  * Handle successful payment
  */
-
-
 export const handleCheckoutSessionCompleted = async ( session:any ) =>{
-
 
     console.log("Checkout Completed Session from paymet.ts.utils:",session.id);
 
@@ -23,16 +17,12 @@ export const handleCheckoutSessionCompleted = async ( session:any ) =>{
         return;
     }
 
-
-
     // Find payment
     const payment = await prisma.payment.findFirst({
         where:{
             stripePaymentId: session.id
         }
     });
-
-
 
     if(!payment){
 
@@ -70,12 +60,9 @@ export const handleCheckoutSessionCompleted = async ( session:any ) =>{
 
     });
 
-
-
     console.log(
         "Payment marked as PAID"
     );
-
 
     return {
         success:true,

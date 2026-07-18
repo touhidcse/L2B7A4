@@ -3,7 +3,7 @@ model Review {
   bookingId    String            @unique
   customerId   String
   technicianId String
-  rating       Int
+  rating       Float
   comment      String
 
   reviewDate   DateTime           @default(now())

@@ -3,12 +3,22 @@ import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { reviewService } from "./review.service";
 import { CreateCommentPayload } from "./review.interface";
+import { sendResponse } from "../../utils/sendResponse";
+import httpstatus from "http-status"
 
 const postReviewForCompletedBooking = catchAsync( async (req: Request, res: Response, next: NextFunction)=>{
     const bookingId = req.params.id;
     const customerId = req.user?.id;
     const payload : CreateCommentPayload= req.body;
     const result = await reviewService.postReviewForCompletedBooking(customerId as string, bookingId as string,payload)
+
+    sendResponse(res,{
+        success: true,
+        statusCode: httpstatus.CREATED,
+        message: "Review completed Successfully",
+        data: result
+    })
+
 })
 
 export const reviewController = {
