@@ -478,6 +478,58 @@ const getBookingDetails = async (userId: string, bookingId: string) => {
 };
 
 /**
+ * Check if booking can be cancelled
+ */
+const canCancelBooking = async (bookingId: string) => {
+    const booking = await prisma.booking.findUnique({
+        where: { id: bookingId },
+        select: {
+            status: true,
+            startAt: true,
+        },
+    });
+
+    if (!booking) {
+        throw {
+            statusCode: 404,
+            message: "Booking not found",
+            code: "BOOKING_NOT_FOUND",
+        };
+    }
+
+    // Check if booking is in progress or completed
+    if (booking.status === 'IN_PROGRESS' || booking.status === 'COMPLETED') {
+        return {
+            canCancel: false,
+            message: "Booking is already in progress or completed",
+            reason: "IN_PROGRESS_OR_COMPLETED",
+        };
+    }
+
+    // Check if booking is already cancelled
+    if (booking.status === 'CANCELLED') {
+        return {
+            canCancel: false,
+            message: "Booking is already cancelled",
+            reason: "ALREADY_CANCELLED",
+        };
+    }
+
+    // Check if booking is declined
+    if (booking.status === 'DECLINED') {
+        return {
+            canCancel: false,
+            message: "Booking has been declined",
+            reason: "DECLINED",
+        };
+    }
+
+    return {
+        canCancel: true,
+        message: "Booking can be cancelled",
+    };
+};
+/**
  * Cancel booking (Customer only)
  * Customers can cancel at any point before it reaches IN_PROGRESS status
  * PATCH /api/bookings/:id/cancel
@@ -497,15 +549,6 @@ const cancelBooking = async (userId: string, bookingId: string, payload: CancelB
             statusCode: 404,
             message: "Booking not found",
             code: "BOOKING_NOT_FOUND",
-        };
-    }
-
-    // Only customer can cancel
-    if (booking.customerId !== userId) {
-        throw {
-            statusCode: 403,
-            message: "Only the customer can cancel this booking",
-            code: "UNAUTHORIZED_ACCESS",
         };
     }
 
@@ -587,58 +630,7 @@ const cancelBooking = async (userId: string, bookingId: string, payload: CancelB
     return cancelledBooking;
 };
 
-/**
- * Check if booking can be cancelled
- */
-const canCancelBooking = async (bookingId: string) => {
-    const booking = await prisma.booking.findUnique({
-        where: { id: bookingId },
-        select: {
-            status: true,
-            startAt: true,
-        },
-    });
 
-    if (!booking) {
-        throw {
-            statusCode: 404,
-            message: "Booking not found",
-            code: "BOOKING_NOT_FOUND",
-        };
-    }
-
-    // Check if booking is in progress or completed
-    if (booking.status === 'IN_PROGRESS' || booking.status === 'COMPLETED') {
-        return {
-            canCancel: false,
-            message: "Booking is already in progress or completed",
-            reason: "IN_PROGRESS_OR_COMPLETED",
-        };
-    }
-
-    // Check if booking is already cancelled
-    if (booking.status === 'CANCELLED') {
-        return {
-            canCancel: false,
-            message: "Booking is already cancelled",
-            reason: "ALREADY_CANCELLED",
-        };
-    }
-
-    // Check if booking is declined
-    if (booking.status === 'DECLINED') {
-        return {
-            canCancel: false,
-            message: "Booking has been declined",
-            reason: "DECLINED",
-        };
-    }
-
-    return {
-        canCancel: true,
-        message: "Booking can be cancelled",
-    };
-};
 
 /**
  * Get booking statistics

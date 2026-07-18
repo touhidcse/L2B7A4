@@ -9,8 +9,6 @@ async function main() {
     try {
         await prisma.$connect();
         console.log("Connected to database successfully");
-        console.log(config.stripe_product_price_id);
-        console.log(config.stripe_secret_key.slice(0, 20));
 
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);

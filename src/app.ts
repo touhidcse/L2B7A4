@@ -12,6 +12,9 @@ import { technicianRoutes } from "./modules/technician/technician.route";
 import { catergoryRoutes } from "./modules/category/category.route";
 import { bookingRoutes } from "./modules/booking/booking.route";
 import { paymentRoutes } from "./modules/payment/payment.route";
+import { auth } from "./middlewares/auth";
+import { Role } from "../generated/prisma/enums";
+import { reviewRoutes } from "./modules/review/review.route";
 
 
 
@@ -59,7 +62,8 @@ app.use("/api/bookings", bookingRoutes)
 //only technican
 app.use("/api/technician", technicianRoutes)
 
-
+// customer only
+app.use("/api/reviews" ,auth(Role.CUSTOMER) , reviewRoutes),
 
 //Admin
 app.use("/api/admin", adminRoutes)
