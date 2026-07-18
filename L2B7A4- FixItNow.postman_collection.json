@@ -94,7 +94,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"name\": \"Updated Name\",\r\n    \"email\": \"level10@programming-hero.com\",\r\n    \"bio\": \"Updated Bio\",\r\n    \"profilePhoto\": \"www.youtube.com\"\r\n}",
+              "raw": "{\r\n    \"name\": \"Yeasin Ahmed\"\r\n    // \"email\": \"level6@programming-hero.com\",\r\n    // \"address\": \"Dhaka\",\r\n    // \"phone\": \"01564798653\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -102,7 +102,7 @@
               }
             },
             "url": {
-              "raw": "localhost:5000/api/users/my-profile",
+              "raw": "localhost:5000/api/users/updatecustomer",
               "host": [
                 "localhost"
               ],
@@ -110,7 +110,7 @@
               "path": [
                 "api",
                 "users",
-                "my-profile"
+                "updatecustomer"
               ]
             }
           },
@@ -368,7 +368,7 @@
       "name": "Bookings",
       "item": [
         {
-          "name": "Get use's Booking with filter",
+          "name": "Get use's own bookings",
           "request": {
             "method": "GET",
             "header": []
@@ -410,8 +410,31 @@
         {
           "name": "Cancel Booking",
           "request": {
-            "method": "GET",
-            "header": []
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"cancelReason\":\"Sorry, I found Better service.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/bookings/cancel/f714a0fd-55d3-4283-ae70-ade282ed4895/",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "bookings",
+                "cancel",
+                "f714a0fd-55d3-4283-ae70-ade282ed4895",
+                ""
+              ]
+            }
           },
           "response": []
         }

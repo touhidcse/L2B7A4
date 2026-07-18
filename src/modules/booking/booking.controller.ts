@@ -46,8 +46,7 @@ const createBooking = catchAsync(async (req: Request, res: Response, next: NextF
  * GET /api/bookings/:id
  */
 const getBookingDetails = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    // const userId = req.user?.id as string;
-    const { bookinId } = req.params;
+    const bookinId = req.params.id;
 
     const booking = await bookingService.getBookingDetails(bookinId as string);
 

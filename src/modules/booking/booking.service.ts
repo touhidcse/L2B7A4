@@ -238,9 +238,8 @@ const createBooking = async (customerId: string, payload: CreateBookingPayload) 
  * GET /api/bookings/:id
  */
 const getBookingDetails = async (bookingId: string) => {
-    // Ensure id is a string
-    if (!bookingId || typeof bookingId !== 'string') {
-        throw new Error("Invalid booking ID")
+    if (!bookingId) {
+        throw new Error("bookingId is required")
     }
     const booking = await prisma.booking.findUnique({
         where: { id: bookingId },
