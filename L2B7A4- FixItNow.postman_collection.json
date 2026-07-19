@@ -17,7 +17,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"name\": \"Random\",\r\n    \"email\": \"level9@programming-hero.com\",\r\n    \"password\": \"123456\",\r\n    \"profilePhoto\":\"www.google.com\"\r\n}",
+              "raw": "{\r\n    \"name\": \"Iqbal\",\r\n    \"email\": \"level61@programming-hero.com\",\r\n    \"password\": \"1234546\",\r\n    \"role\": \"CUSTOMER\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -41,9 +41,6 @@
         },
         {
           "name": "Get My Profile",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -60,18 +57,10 @@
               {
                 "key": "Authorization",
                 "value": "{{json_web_token_0luh}}",
-                "type": "text"
+                "type": "text",
+                "disabled": true
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"email\": \"level7@programming-hero.com\",\r\n    \"password\": \"123456\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
             "url": {
               "raw": "localhost:5000/api/users/me",
               "host": [
@@ -94,7 +83,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"name\": \"Yeasin Ahmed\"\r\n    // \"email\": \"level6@programming-hero.com\",\r\n    // \"address\": \"Dhaka\",\r\n    // \"phone\": \"01564798653\"\r\n}",
+              "raw": "{\r\n    \"name\": \"Iqbal\"\r\n    // \"email\": \"level6@programming-hero.com\",\r\n    // \"address\": \"Dhaka\",\r\n    // \"phone\": \"01564798653\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -128,7 +117,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"email\": \"level10@programming-hero.com\",\r\n    \"password\": \"123456\"\r\n}",
+              "raw": "{\r\n    \"email\": \"level61@programming-hero.com\",\r\n    \"password\": \"1234546\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -136,7 +125,8 @@
               }
             },
             "url": {
-              "raw": "localhost:5000/api/auth/login",
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
               "host": [
                 "localhost"
               ],
@@ -158,8 +148,29 @@
         {
           "name": "Catergory creation",
           "request": {
-            "method": "GET",
-            "header": []
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"type\":\"Draining\"\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/admin/categories",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "admin",
+                "categories"
+              ]
+            }
           },
           "response": []
         },
@@ -167,7 +178,19 @@
           "name": "Get All Categories",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "localhost:5000/api/admin/categories",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "admin",
+                "categories"
+              ]
+            }
           },
           "response": []
         },
@@ -175,7 +198,20 @@
           "name": "Get all users",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "localhost:5000/api/admin/users/",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "admin",
+                "users",
+                ""
+              ]
+            }
           },
           "response": []
         },
@@ -183,7 +219,19 @@
           "name": "Get All Bookings",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "localhost:5000/api/admin/bookings",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "admin",
+                "bookings"
+              ]
+            }
           },
           "response": []
         },
@@ -194,7 +242,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"isBan\":false\r\n}",
+              "raw": "{\r\n    \"isBan\":true\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -202,7 +250,7 @@
               }
             },
             "url": {
-              "raw": "localhost:5000/api/admin/users/9ea394a3-ea10-47f0-9b65-f418582e64f7",
+              "raw": "localhost:5000/api/admin/users/8bca6c9d-10b5-45fb-bdca-bd28632210fc",
               "host": [
                 "localhost"
               ],
@@ -211,7 +259,7 @@
                 "api",
                 "admin",
                 "users",
-                "9ea394a3-ea10-47f0-9b65-f418582e64f7"
+                "8bca6c9d-10b5-45fb-bdca-bd28632210fc"
               ]
             }
           },
@@ -229,7 +277,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"name\":\"Sadi\",\r\n    \"bio\":\"Sadi, I am professional plumbing.....\",\r\n    \"location\": \"Khagrachari, Chattogram\",\r\n    \"experience\":\"6\",\r\n    \"profilePhoto\":\"www.google.com/125\"\r\n\r\n}\r\n",
+              "raw": "{\r\n    \r\n    \"bio\": \"Istiak, I am professional Drainer .....\",\r\n    \"experience\": 4,\r\n    \"profilePhoto\": \"www.google.com/li73^m\",\r\n    \"location\": \"Khagrachari, Chattogram\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -252,10 +300,32 @@
           "response": []
         },
         {
-          "name": "Update Availability slots",
+          "name": "Create Availability",
           "request": {
-            "method": "GET",
-            "header": []
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"availabilities\": [\r\n    {\r\n      \"day\": \"SATURDAY\",\r\n      \"startTime\": \"09:00\",\r\n      \"endTime\": \"12:00\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"SATURDAY\",\r\n      \"startTime\": \"14:00\",\r\n      \"endTime\": \"17:00\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"SUNDAY\",\r\n      \"startTime\": \"11:00\",\r\n      \"endTime\": \"14:00\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"MONDAY\",\r\n      \"startTime\": \"08:30\",\r\n      \"endTime\": \"11:30\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"MONDAY\",\r\n      \"startTime\": \"16:00\",\r\n      \"endTime\": \"19:00\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"THURSDAY\",\r\n      \"startTime\": \"09:00\",\r\n      \"endTime\": \"12:00\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"FRIDAY\",\r\n      \"startTime\": \"15:00\",\r\n      \"endTime\": \"18:00\",\r\n      \"isAvailable\": true\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/technician/availability",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technician",
+                "availability"
+              ]
+            }
           },
           "response": []
         },
@@ -263,15 +333,49 @@
           "name": "Get All availabilities",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/technician/availability",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technician",
+                "availability"
+              ]
+            }
           },
           "response": []
         },
         {
-          "name": "Create Availability",
+          "name": "Update Availability slots",
           "request": {
-            "method": "GET",
-            "header": []
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"availabilities\":  [\r\n        {\r\n            \"day\": \"SATURDAY\",\r\n            \"startTime\": \"09:00\",\r\n            \"endTime\": \"12:00\",\r\n            \"isAvailable\": true\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/technician/availability",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technician",
+                "availability"
+              ]
+            }
           },
           "response": []
         },
@@ -279,15 +383,50 @@
           "name": "Get Technician's Bookings",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "localhost:5000/api/technician/bookings/",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technician",
+                "bookings",
+                ""
+              ]
+            }
           },
           "response": []
         },
         {
-          "name": "Update Booking Status by Id",
+          "name": "Update Technician's Booking Status by bookingId",
           "request": {
-            "method": "GET",
-            "header": []
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"ACCEPTED\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/technician/bookings/a48e14a7-5722-4f26-8c1d-89f7b858225a",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technician",
+                "bookings",
+                "a48e14a7-5722-4f26-8c1d-89f7b858225a"
+              ]
+            }
           },
           "response": []
         }
@@ -298,9 +437,50 @@
       "item": [
         {
           "name": "Services with Filters",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_16sg}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
-            "header": []
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{json_web_token_0luh}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"level7@programming-hero.com\",\r\n    \"password\": \"123456\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/services?search=jisan",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "services"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "jisan"
+                }
+              ]
+            }
           },
           "response": []
         },
@@ -333,14 +513,20 @@
               "raw": "{\r\n    \"email\": \"level7@programming-hero.com\",\r\n    \"password\": \"123456\"\r\n}"
             },
             "url": {
-              "raw": "localhost:5000/api/technician",
+              "raw": "localhost:5000/api/technicians?search=jisan",
               "host": [
                 "localhost"
               ],
               "port": "5000",
               "path": [
                 "api",
-                "technician"
+                "technicians"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "jisan"
+                }
               ]
             }
           },
@@ -350,15 +536,19 @@
           "name": "Technician with Reviews",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
-        },
-        {
-          "name": "All service Categories",
-          "request": {
-            "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "localhost:5000/api/technicians/5f599a3f-4963-493f-944d-2b06c8b88b96",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "technicians",
+                "5f599a3f-4963-493f-944d-2b06c8b88b96"
+              ]
+            }
           },
           "response": []
         }
@@ -371,23 +561,66 @@
           "name": "Get use's own bookings",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "localhost:5000/api/bookings",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
           },
           "response": []
         },
         {
-          "name": "Get Booking Stats",
+          "name": "Get Booking Stats any authenticated user",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "localhost:5000/api/bookings/stats",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "bookings",
+                "stats"
+              ]
+            }
           },
           "response": []
         },
         {
           "name": "Create Booking",
           "request": {
-            "method": "GET",
-            "header": []
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"technicianId\": \"5f599a3f-4963-493f-944d-2b06c8b88b96\",\r\n    \"serviceId\": \"2c7f9d1e-6e5a-4cb5-9c0d-5a8b7f2e1d05\",\r\n    \"startAt\": \"2026-07-20T22:00:00Z\",\r\n    \"endAt\": \"2026-07-21T24:00:00Z\"\r\n}\r\n\r\n            ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/bookings",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
           },
           "response": []
         },
@@ -395,20 +628,45 @@
           "name": "Get Booking Details with Id",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "localhost:5000/api/bookings/a4d913f5-b110-4f1d-94cc-2d937021887b",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "bookings",
+                "a4d913f5-b110-4f1d-94cc-2d937021887b"
+              ]
+            }
           },
           "response": []
         },
         {
-          "name": "Can cancel Booking",
+          "name": "Can cancel Booking any Authenticated user",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "localhost:5000/api/bookings/can-cancel/f714a0fd-55d3-4283-ae70-ade282ed4895",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "bookings",
+                "can-cancel",
+                "f714a0fd-55d3-4283-ae70-ade282ed4895"
+              ]
+            }
           },
           "response": []
         },
         {
-          "name": "Cancel Booking",
+          "name": "Cancel Booking only owner customer",
           "request": {
             "method": "PATCH",
             "header": [],
@@ -437,6 +695,25 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "All service Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:5000/api/categories",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "categories"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -444,13 +721,13 @@
       "name": "Payment",
       "item": [
         {
-          "name": "Created Payment Session for Accepted Booking",
+          "name": "Created Payment Session for Accepted Booking by bookingId in body",
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"bookingId\": \"5135b512-1723-4a3f-a0f1-5c44fe4b867e\"\r\n}",
+              "raw": "{\r\n    \"bookingId\": \"a48e14a7-5722-4f26-8c1d-89f7b858225a\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -474,12 +751,15 @@
         },
         {
           "name": "Get User Own Payment History",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"bookingId\": \"dacd83a3-90fd-4f66-a349-7bd531e79853\",\r\n    \"successUrl\": \"http://localhost:3000/payments/success\",\r\n    \"cancelUrl\": \"http://localhost:3000/payments/cancel\"\r\n}",
+              "raw": "",
               "options": {
                 "raw": {
                   "language": "json"
@@ -487,7 +767,7 @@
               }
             },
             "url": {
-              "raw": "localhost:5000/api/payments/create",
+              "raw": "localhost:5000/api/payments/",
               "host": [
                 "localhost"
               ],
@@ -495,17 +775,29 @@
               "path": [
                 "api",
                 "payments",
-                "create"
+                ""
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Get Payment Details by Id",
+          "name": "Get Payment Details by paymentId",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "localhost:5000/api/payments/efe84fb9-e9c9-4a5b-8e33-56f5b85e08df",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "payments",
+                "efe84fb9-e9c9-4a5b-8e33-56f5b85e08df"
+              ]
+            }
           },
           "response": []
         }
@@ -519,6 +811,755 @@
           "request": {
             "method": "GET",
             "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Production Test After Deployment",
+      "item": [
+        {
+          "name": "Register user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Bashek\",\r\n    \"email\": \"level60@programming-hero.com\",\r\n    \"password\": \"1234546\",\r\n    \"role\": \"CUSTOMER\",\r\n    \"phone\":\"0178776697\",\r\n    \"address\":\"Dhaka\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/users/register",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "users",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"level4@programming-hero.com\",\r\n    \"password\": \"1234546\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/auth/login",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current Authenticated User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/users/me",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Customer Profile",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Bashek Vai\" ,\r\n    \"email\": \"level60@programming-hero.com\",\r\n    \"password\": \"1234546\",\r\n    \"role\": \"CUSTOMER\",\r\n    \"phone\":\"0178776697\",\r\n    \"address\":\"Dhaka\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/users/updatecustomer",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "users",
+                "updatecustomer"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all services with filter public",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/services?type=plumbing",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "services"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "plumbing"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all Technician with filter public",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/technicians?location=dhaka",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "technicians"
+              ],
+              "query": [
+                {
+                  "key": "location",
+                  "value": "dhaka"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Technician with profile review by id public",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/technicians/7bd4b9ae-0028-4a6b-9341-3d86d29bead0",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "technicians",
+                "7bd4b9ae-0028-4a6b-9341-3d86d29bead0"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Categories Public",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/categories",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create new Bookings by Customer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"technicianId\": \"5f599a3f-4963-493f-944d-2b06c8b88b96\",\r\n    \"serviceId\": \"8e2f3d4a-9c5e-4d7f-a2b1-7f6d5c4b3a07\",\r\n    \"startAt\": \"2026-07-19T22:00:00Z\",\r\n    \"endAt\": \"2026-07-20T24:00:00Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/bookings",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get user's own Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/bookings",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Booking Details by bookingId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/bookings/242400a9-4384-4e50-8dad-fe06520f19e9",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "242400a9-4384-4e50-8dad-fe06520f19e9"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Can cancel any authenticated user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/bookings/can-cancel/e5de703c-d636-4d75-887e-50440e420081",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "can-cancel",
+                "e5de703c-d636-4d75-887e-50440e420081"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Bookings By customer",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"cancelReason\":\"Sorry, I found Better service.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/bookings/cancel/f714a0fd-55d3-4283-ae70-ade282ed4895/",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "cancel",
+                "f714a0fd-55d3-4283-ae70-ade282ed4895",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create a payment session",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"bookingId\": \"a76262f5-c6e9-4b60-b18a-868890fd8d2a\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/payments/create",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get user's own payment history",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/payments",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "payments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get payment Details By payment Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/payments/a4d913f5-b110-4f1d-94cc-2d937021887b",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "a4d913f5-b110-4f1d-94cc-2d937021887b"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Technician Profile",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"bio\": \"Nadia, I am professional Electritian .....\",\r\n    \"experience\": 4,\r\n    \"profilePhoto\": \"www.google.com/li73^m\",\r\n    \"location\": \"Savar,Dhaka\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/technician/profile",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "technician",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all availability slots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/technician/availability",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "technician",
+                "availability"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Availability slots",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"availabilities\": [\r\n    {\r\n      \"day\": \"SATURDAY\",\r\n      \"startTime\": \"09:00\",\r\n      \"endTime\": \"12:00\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"SATURDAY\",\r\n      \"startTime\": \"14:00\",\r\n      \"endTime\": \"17:00\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"SUNDAY\",\r\n      \"startTime\": \"11:00\",\r\n      \"endTime\": \"14:00\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"MONDAY\",\r\n      \"startTime\": \"08:30\",\r\n      \"endTime\": \"11:30\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"MONDAY\",\r\n      \"startTime\": \"16:00\",\r\n      \"endTime\": \"19:00\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"THURSDAY\",\r\n      \"startTime\": \"09:00\",\r\n      \"endTime\": \"12:00\",\r\n      \"isAvailable\": true\r\n    },\r\n    {\r\n      \"day\": \"FRIDAY\",\r\n      \"startTime\": \"15:00\",\r\n      \"endTime\": \"18:00\",\r\n      \"isAvailable\": true\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/technician/availability",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "technician",
+                "availability"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Availability slots",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"availabilities\":  [\r\n        {\r\n            \"day\": \"SATURDAY\",\r\n            \"startTime\": \"09:00\",\r\n            \"endTime\": \"12:00\",\r\n            \"isAvailable\": true\r\n        }\r\n    ]\r\n}"
+            },
+            "url": {
+              "raw": "localhost:5000/api/api/technician/availability",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "api",
+                "technician",
+                "availability"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Technician's Booking",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/technician/bookings/",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "technician",
+                "bookings",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Technician's Booking Status by bookingId",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"ACCEPTED\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/technician/bookings/f027bca7-d408-4962-93e8-2067c59429d3",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "technician",
+                "bookings",
+                "f027bca7-d408-4962-93e8-2067c59429d3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Give Review By Booking Id",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"rating\": 5,\r\n    \"comment\": \"Excellent service A Latif\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/reviews/a4d913f5-b110-4f1d-94cc-2d937021887b",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "reviews",
+                "a4d913f5-b110-4f1d-94cc-2d937021887b"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Category Creation by Admin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"type\":\"Painting new version 2\"\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/admin/categories",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All categories by Admin",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/admin/categories",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all users by Admin",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/admin/users/",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all Bookings by Admin",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/admin/bookings/",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "bookings",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update user Status ban/unban by Admin",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"isBan\":true\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://fixitnowbackend.vercel.app/api/admin/users/8bca6c9d-10b5-45fb-bdca-bd28632210fc",
+              "protocol": "https",
+              "host": [
+                "fixitnowbackend",
+                "vercel",
+                "app"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users",
+                "8bca6c9d-10b5-45fb-bdca-bd28632210fc"
+              ]
+            }
           },
           "response": []
         }

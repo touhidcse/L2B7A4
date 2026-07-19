@@ -314,10 +314,9 @@ const canCancelBooking = async (bookingId: string) => {
 
     const booking = await prisma.booking.findUnique({
         where: { id: bookingId },
-        select: {
-            status: true,
-            startAt: true,
-        },
+        include: {
+            payment: true
+        }
     });
 
     if (!booking) {
@@ -327,7 +326,7 @@ const canCancelBooking = async (bookingId: string) => {
             code: "BOOKING_NOT_FOUND",
         };
     }
-
+   
     // Check if booking is in progress or completed
     if (booking.status === 'IN_PROGRESS' || booking.status === 'COMPLETED') {
         return {

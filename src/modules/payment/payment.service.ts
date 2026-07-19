@@ -10,186 +10,338 @@ import config from "../../config";
  * Create a Stripe checkout session for an accepted booking
  * POST /api/payments/create
  */
-const createPaymentSession = async (customerId: string, payload: ICreatePaymentPayload) => {
-    const { bookingId } = payload;
+// It is not workign on production mode due to heavy load time greater than 5ms
+// const createPaymentSession = async (customerId: string, payload: ICreatePaymentPayload) => {
+//     const { bookingId } = payload;
 
-    // Validate required fields
-    if (!payload.bookingId) {
-        throw new Error ("Booking ID is required")
-    }
+//     // Validate required fields
+//     if (!payload.bookingId) {
+//         throw new Error ("Booking ID is required")
+//     }
 
-    const transactionResult = await prisma.$transaction(async (tx) => {
-        // Get booking with customer and service details
-        const booking = await tx.booking.findUnique({
-            where: { id: bookingId },
-            include: {
-                customer: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
-                    },
-                },
-                service: {
-                    select: {
-                        id: true,
-                        title: true,
-                        description: true,
-                        price: true,
-                    },
-                },
-                technician: {
-                    include: {
-                        user: {
-                            select: {
-                                id: true,
-                                name: true,
-                                email: true,
-                            },
-                        },
-                    },
-                },
-            },
-        });
+//     const transactionResult = await prisma.$transaction(async (tx) => {
+//         // Get booking with customer and service details
+//         const booking = await tx.booking.findUnique({
+//             where: { id: bookingId },
+//             include: {
+//                 customer: {
+//                     select: {
+//                         id: true,
+//                         name: true,
+//                         email: true,
+//                     },
+//                 },
+//                 service: {
+//                     select: {
+//                         id: true,
+//                         title: true,
+//                         description: true,
+//                         price: true,
+//                     },
+//                 },
+//                 technician: {
+//                     include: {
+//                         user: {
+//                             select: {
+//                                 id: true,
+//                                 name: true,
+//                                 email: true,
+//                             },
+//                         },
+//                     },
+//                 },
+//             },
+//         });
 
-        if (!booking) {
-            throw {
-                statusCode: 404,
-                message: "Booking not found",
-                code: "BOOKING_NOT_FOUND",
-            };
-        }
+//         if (!booking) {
+//             throw {
+//                 statusCode: 404,
+//                 message: "Booking not found",
+//                 code: "BOOKING_NOT_FOUND",
+//             };
+//         }
 
-        // Check if customer owns this booking
-        if (booking.customerId !== customerId) {
-            throw {
-                statusCode: 403,
-                message: "You are not authorized to pay for this booking",
-                code: "UNAUTHORIZED_ACCESS",
-            };
-        }
+//         // Check if customer owns this booking
+//         if (booking.customerId !== customerId) {
+//             throw {
+//                 statusCode: 403,
+//                 message: "You are not authorized to pay for this booking",
+//                 code: "UNAUTHORIZED_ACCESS",
+//             };
+//         }
 
-        // Check if booking is already paid
-        if (booking.status === 'PAID') {
-            throw {
-                statusCode: 400,
-                message: "Booking is already paid",
-                code: "BOOKING_ALREADY_PAID",
-            };
-        }
+//         // Check if booking is already paid
+//         if (booking.status === 'PAID') {
+//             throw {
+//                 statusCode: 400,
+//                 message: "Booking is already paid",
+//                 code: "BOOKING_ALREADY_PAID",
+//             };
+//         }
 
-        // Check if booking is completed or cancelled or declined or In-progress
-        if (booking.status === 'COMPLETED' || booking.status === 'CANCELLED' || booking.status === "DECLINED" || booking.status === "IN_PROGRESS") {
-            throw {
-                statusCode: 400,
-                message: `Booking is ${booking.status.toLowerCase()} and cannot be paid`,
-                code: "BOOKING_NOT_ACCEPTED",
-            };
-        }
+//         // Check if booking is completed or cancelled or declined or In-progress
+//         if (booking.status === 'COMPLETED' || booking.status === 'CANCELLED' || booking.status === "DECLINED" || booking.status === "IN_PROGRESS") {
+//             throw {
+//                 statusCode: 400,
+//                 message: `Booking is ${booking.status.toLowerCase()} and cannot be paid`,
+//                 code: "BOOKING_NOT_ACCEPTED",
+//             };
+//         }
 
-        // CRITICAL: Can only pay if booking status is ACCEPTED
-        if (booking.status !== 'ACCEPTED') {
-            throw {
-                statusCode: 400,
-                message: `Booking must be accepted before payment. Current status: ${booking.status}`,
-                code: "BOOKING_NOT_ACCEPTED",
-            };
-        }
+//         // CRITICAL: Can only pay if booking status is ACCEPTED
+//         if (booking.status !== 'ACCEPTED') {
+//             throw {
+//                 statusCode: 400,
+//                 message: `Booking must be accepted before payment. Current status: ${booking.status}`,
+//                 code: "BOOKING_NOT_ACCEPTED",
+//             };
+//         }
 
-        const user = await prisma.user.findFirstOrThrow({
-            where: {
-                id: customerId
-            },
-            include:{
-                payments: true
-            }
-        })
+//         const user = await prisma.user.findFirstOrThrow({
+//             where: {
+//                 id: customerId
+//             },
+//             include:{
+//                 payments: true
+//             }
+//         })
 
-        // old customer of FixItNowBackend
+//         // old customer of FixItNowBackend
 
-        let stripeCustomerId = user.payments[0]?.stripeCustomerId
+//         let stripeCustomerId = user.payments[0]?.stripeCustomerId
 
-        if (!stripeCustomerId) {
+//         if (!stripeCustomerId) {
 
-            //new customer of FixItNowBackedn
-            const customer = await stripe.customers.create({
-                email: user.email,
-                name: user.name,
-                metadata: { userId: user.id }
-            })
+//             //new customer of FixItNowBackedn
+//             const customer = await stripe.customers.create({
+//                 email: user.email,
+//                 name: user.name,
+//                 metadata: { userId: user.id }
+//             })
 
-            stripeCustomerId = customer.id;
-        }
+//             stripeCustomerId = customer.id;
+//         }
 
-        // Create Stripe Checkout Session
-        const session = await stripe.checkout.sessions.create({
-            line_items: [
-                {
-                    price_data: {
-                        currency: "usd",
-                        product_data: {
-                            name: booking.service.title,
-                        },
-                        unit_amount: booking.price * 100,
-                    },
-                    quantity: 1,
-                },
-            ],
-            mode: 'payment',
-            success_url: `${config.app_url}/premium?success=true`,
-            cancel_url: `${config.app_url}/payment?success=false`,
-            customer_email: booking.customer.email,
-            metadata: {
-                bookingId: booking.id,
-                customerId: booking.customerId,
-                technicianId: booking.technicianId,
-            },
-        });
+//         // Create Stripe Checkout Session
+//         const session = await stripe.checkout.sessions.create({
+//             line_items: [
+//                 {
+//                     price_data: {
+//                         currency: "usd",
+//                         product_data: {
+//                             name: booking.service.title,
+//                         },
+//                         unit_amount: booking.price * 100,
+//                     },
+//                     quantity: 1,
+//                 },
+//             ],
+//             mode: 'payment',
+//             success_url: `${config.app_url}/premium?success=true`,
+//             cancel_url: `${config.app_url}/payment?success=false`,
+//             customer_email: booking.customer.email,
+//             metadata: {
+//                 bookingId: booking.id,
+//                 customerId: booking.customerId,
+//                 technicianId: booking.technicianId,
+//             },
+//         });
 
-        // Create payment record
-        const payment = await tx.payment.create({
-            data: {
-                bookingId: booking.id,
-                customerId: booking.customerId,
-                price: booking.service.price,
-                method: PaymentMethod.STRIPE,
-                status: PaymentStatus.PENDING,
-                stripeCustomerId: stripeCustomerId,
-                stripePaymentId: session.id,
-            },
-            include: {
-                customer: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
-                    },
-                },
-                booking: {
-                    include: {
-                        service: true,
-                        technician: {
-                            include: {
-                                user: {
-                                    select: {
-                                        id: true,
-                                        name: true,
-                                        email: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        });
-        return {
-            sessionId: session.id,
-            checkoutUrl: session.url,
-            payment,
-        };
+//         // Create payment record
+//         const payment = await tx.payment.create({
+//             data: {
+//                 bookingId: booking.id,
+//                 customerId: booking.customerId,
+//                 price: booking.service.price,
+//                 method: PaymentMethod.STRIPE,
+//                 status: PaymentStatus.PENDING,
+//                 stripeCustomerId: stripeCustomerId,
+//                 stripePaymentId: session.id,
+//             },
+//             include: {
+//                 customer: {
+//                     select: {
+//                         id: true,
+//                         name: true,
+//                         email: true,
+//                     },
+//                 },
+//                 booking: {
+//                     include: {
+//                         service: true,
+//                         technician: {
+//                             include: {
+//                                 user: {
+//                                     select: {
+//                                         id: true,
+//                                         name: true,
+//                                         email: true,
+//                                     },
+//                                 },
+//                             },
+//                         },
+//                     },
+//                 },
+//             },
+//         });
+//         return {
+//             sessionId: session.id,
+//             checkoutUrl: session.url,
+//             payment,
+//         };
+//     });
+//     return transactionResult;
+// };
+
+const createPaymentSession = async (
+  customerId: string,
+  payload: ICreatePaymentPayload
+) => {
+  const { bookingId } = payload;
+
+  if (!bookingId) {
+    throw new Error("Booking ID is required");
+  }
+
+  // 1. Booking
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    select: {
+      id: true,
+      customerId: true,
+      technicianId: true,
+      status: true,
+      price: true,
+
+      customer: {
+        select: {
+          email: true,
+        },
+      },
+
+      service: {
+        select: {
+          title: true,
+          price: true,
+        },
+      },
+    },
+  });
+
+  if (!booking) {
+    throw {
+      statusCode: 404,
+      message: "Booking not found",
+    };
+  }
+
+  if (booking.customerId !== customerId) {
+    throw {
+      statusCode: 403,
+      message: "Unauthorized",
+    };
+  }
+
+  if (booking.status === BookingStatus.PAID) {
+    throw {
+      statusCode: 400,
+      message: "Booking already paid",
+    };
+  }
+
+  if (booking.status !== BookingStatus.ACCEPTED) {
+    throw {
+      statusCode: 400,
+      message: `Booking must be ACCEPTED. Current status: ${booking.status}`,
+    };
+  }
+
+  // 2. User
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: customerId,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+
+      payments: {
+        select: {
+          stripeCustomerId: true,
+        },
+        take: 1,
+      },
+    },
+  });
+
+  // 3. Stripe Customer
+  let stripeCustomerId = user.payments[0]?.stripeCustomerId;
+
+  if (!stripeCustomerId) {
+    const customer = await stripe.customers.create({
+      email: user.email,
+      name: user.name,
+      metadata: {
+        userId: user.id,
+      },
     });
-    return transactionResult;
+
+    stripeCustomerId = customer.id;
+  }
+
+  // 4. Stripe Checkout Session
+  const session = await stripe.checkout.sessions.create({
+    mode: "payment",
+
+    customer: stripeCustomerId,
+
+    line_items: [
+      {
+        quantity: 1,
+        price_data: {
+          currency: "usd",
+          unit_amount: Math.round(booking.price * 100),
+
+          product_data: {
+            name: booking.service.title,
+          },
+        },
+      },
+    ],
+
+    success_url: `${config.app_url}/premium?success=true`,
+    cancel_url: `${config.app_url}/payment?success=false`,
+
+    metadata: {
+      bookingId: booking.id,
+      customerId,
+      technicianId: booking.technicianId,
+    },
+  });
+
+  // 5. Transaction (ONLY DB)
+  const payment = await prisma.$transaction(async (tx) => {
+    return tx.payment.create({
+      data: {
+        bookingId: booking.id,
+        customerId,
+        price: booking.service.price,
+
+        method: PaymentMethod.STRIPE,
+        status: PaymentStatus.PENDING,
+
+        stripeCustomerId,
+        stripePaymentId: session.id,
+      },
+    });
+  });
+
+  return {
+    sessionId: session.id,
+    checkoutUrl: session.url,
+    payment,
+  };
 };
 
 

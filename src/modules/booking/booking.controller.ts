@@ -65,7 +65,8 @@ const getBookingDetails = catchAsync(async (req: Request, res: Response, next: N
  * GET /api/bookings/:id/can-cancel
  */
 const canCancelBooking = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const bookingId  = req.params.id;
+    const bookingId = req.params.id;
+
     
     const result = await bookingService.canCancelBooking(bookingId as string);
 
